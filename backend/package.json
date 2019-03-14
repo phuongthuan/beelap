@@ -1,0 +1,11 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "deploy": "prisma deploy --env-file variables.env"
+  },
+  "author": "",
+  "license": "ISC"
+}
