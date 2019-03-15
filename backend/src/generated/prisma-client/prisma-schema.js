@@ -26,7 +26,6 @@ type Item {
   price: Int!
   createdAt: DateTime!
   updatedAt: DateTime!
-  user: User!
 }
 
 type ItemConnection {
@@ -41,7 +40,6 @@ input ItemCreateInput {
   image: String
   largeImage: String
   price: Int!
-  user: UserCreateOneInput!
 }
 
 type ItemEdge {
@@ -103,7 +101,6 @@ input ItemUpdateInput {
   image: String
   largeImage: String
   price: Int
-  user: UserUpdateOneRequiredInput
 }
 
 input ItemUpdateManyMutationInput {
@@ -209,7 +206,6 @@ input ItemWhereInput {
   updatedAt_lte: DateTime
   updatedAt_gt: DateTime
   updatedAt_gte: DateTime
-  user: UserWhereInput
   AND: [ItemWhereInput!]
   OR: [ItemWhereInput!]
   NOT: [ItemWhereInput!]
@@ -285,11 +281,6 @@ input UserCreateInput {
   name: String!
 }
 
-input UserCreateOneInput {
-  create: UserCreateInput
-  connect: UserWhereUniqueInput
-}
-
 type UserEdge {
   node: User!
   cursor: String!
@@ -332,11 +323,6 @@ input UserSubscriptionWhereInput {
   NOT: [UserSubscriptionWhereInput!]
 }
 
-input UserUpdateDataInput {
-  email: String
-  name: String
-}
-
 input UserUpdateInput {
   email: String
   name: String
@@ -345,18 +331,6 @@ input UserUpdateInput {
 input UserUpdateManyMutationInput {
   email: String
   name: String
-}
-
-input UserUpdateOneRequiredInput {
-  create: UserCreateInput
-  update: UserUpdateDataInput
-  upsert: UserUpsertNestedInput
-  connect: UserWhereUniqueInput
-}
-
-input UserUpsertNestedInput {
-  update: UserUpdateDataInput!
-  create: UserCreateInput!
 }
 
 input UserWhereInput {

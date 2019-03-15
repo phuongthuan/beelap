@@ -1,8 +1,17 @@
-require('dotenv').config({ path: 'variables.env' });
-const createServer = require('./createServer');
-const db = require('./db');
+const { GraphQLServer } = require('graphql-yoga')
+const { prisma } = require('./generated/prisma-client')
+const resolvers = require('./resolvers')
 
-const server = createServer();
+const server = new GraphQLServer({
+  typeDefs: 'src/schema.graphql',
+  resolvers,
+  context: request => {
+    return {
+      ...request,
+      prisma,
+    }
+  },
+})
 
 // TODO Use express middleware to handle cookies (JWT)
 

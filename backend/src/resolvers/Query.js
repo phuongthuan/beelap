@@ -1,8 +1,8 @@
 const Query = {
   items: async (parent, args, context) => {
-    const items = await prisma.items();
-    return items;
+    const allPosts = await context.prisma.items();
+    return allPosts;
   },
 };
 
-module.exports = Query;
+module.exports = { Query };

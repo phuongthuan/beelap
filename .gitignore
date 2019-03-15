@@ -7,4 +7,6 @@ haters/
 layout.md
 variables.env
 .idea/
-.vscode/
+.vscode
+dist/
+.env

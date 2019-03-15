@@ -1,17 +1,14 @@
 const Mutation = {
-  async createItem(parent, args, ctx, info) {
+  async createItem(parent, { title, description, price }, context) {
     // TODO: Check if they are logged in
-    const item = await ctx.db.mutation.createItem(
-      {
-        data: {
-          ...args,
-        },
-      },
-      info
-    );
+    const item = await context.prisma.createItem({
+      title,
+      description,
+      price
+    });
 
     return item;
   },
 }
 
-module.exports = Mutation;
+module.exports = { Mutation };

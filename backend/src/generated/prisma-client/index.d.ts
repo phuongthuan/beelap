@@ -277,11 +277,15 @@ export interface ItemWhereInput {
   updatedAt_lte?: DateTimeInput;
   updatedAt_gt?: DateTimeInput;
   updatedAt_gte?: DateTimeInput;
-  user?: UserWhereInput;
   AND?: ItemWhereInput[] | ItemWhereInput;
   OR?: ItemWhereInput[] | ItemWhereInput;
   NOT?: ItemWhereInput[] | ItemWhereInput;
 }
+
+export type UserWhereUniqueInput = AtLeastOne<{
+  id: ID_Input;
+  email?: String;
+}>;
 
 export interface UserWhereInput {
   id?: ID_Input;
@@ -331,28 +335,12 @@ export interface UserWhereInput {
   NOT?: UserWhereInput[] | UserWhereInput;
 }
 
-export type UserWhereUniqueInput = AtLeastOne<{
-  id: ID_Input;
-  email?: String;
-}>;
-
 export interface ItemCreateInput {
   title: String;
   description: String;
   image?: String;
   largeImage?: String;
   price: Int;
-  user: UserCreateOneInput;
-}
-
-export interface UserCreateOneInput {
-  create?: UserCreateInput;
-  connect?: UserWhereUniqueInput;
-}
-
-export interface UserCreateInput {
-  email: String;
-  name: String;
 }
 
 export interface ItemUpdateInput {
@@ -361,24 +349,6 @@ export interface ItemUpdateInput {
   image?: String;
   largeImage?: String;
   price?: Int;
-  user?: UserUpdateOneRequiredInput;
-}
-
-export interface UserUpdateOneRequiredInput {
-  create?: UserCreateInput;
-  update?: UserUpdateDataInput;
-  upsert?: UserUpsertNestedInput;
-  connect?: UserWhereUniqueInput;
-}
-
-export interface UserUpdateDataInput {
-  email?: String;
-  name?: String;
-}
-
-export interface UserUpsertNestedInput {
-  update: UserUpdateDataInput;
-  create: UserCreateInput;
 }
 
 export interface ItemUpdateManyMutationInput {
@@ -387,6 +357,11 @@ export interface ItemUpdateManyMutationInput {
   image?: String;
   largeImage?: String;
   price?: Int;
+}
+
+export interface UserCreateInput {
+  email: String;
+  name: String;
 }
 
 export interface UserUpdateInput {
@@ -445,7 +420,6 @@ export interface ItemPromise extends Promise<Item>, Fragmentable {
   price: () => Promise<Int>;
   createdAt: () => Promise<DateTimeOutput>;
   updatedAt: () => Promise<DateTimeOutput>;
-  user: <T = UserPromise>() => T;
 }
 
 export interface ItemSubscription
@@ -459,27 +433,6 @@ export interface ItemSubscription
   price: () => Promise<AsyncIterator<Int>>;
   createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
   updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
-  user: <T = UserSubscription>() => T;
-}
-
-export interface User {
-  id: ID_Output;
-  email: String;
-  name: String;
-}
-
-export interface UserPromise extends Promise<User>, Fragmentable {
-  id: () => Promise<ID_Output>;
-  email: () => Promise<String>;
-  name: () => Promise<String>;
-}
-
-export interface UserSubscription
-  extends Promise<AsyncIterator<User>>,
-    Fragmentable {
-  id: () => Promise<AsyncIterator<ID_Output>>;
-  email: () => Promise<AsyncIterator<String>>;
-  name: () => Promise<AsyncIterator<String>>;
 }
 
 export interface ItemConnection {
@@ -557,6 +510,26 @@ export interface AggregateItemSubscription
   extends Promise<AsyncIterator<AggregateItem>>,
     Fragmentable {
   count: () => Promise<AsyncIterator<Int>>;
+}
+
+export interface User {
+  id: ID_Output;
+  email: String;
+  name: String;
+}
+
+export interface UserPromise extends Promise<User>, Fragmentable {
+  id: () => Promise<ID_Output>;
+  email: () => Promise<String>;
+  name: () => Promise<String>;
+}
+
+export interface UserSubscription
+  extends Promise<AsyncIterator<User>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  email: () => Promise<AsyncIterator<String>>;
+  name: () => Promise<AsyncIterator<String>>;
 }
 
 export interface UserConnection {
