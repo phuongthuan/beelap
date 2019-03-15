@@ -1,7 +1,7 @@
-const { forwardTo } = require('prisma-binding');
-
 const Query = {
-  items: forwardTo('db'),
+  itemsList: (parent, args, context) => {
+    return context.prisma.items({ where: { title: 'new' } })
+  }
 };
 
 module.exports = Query;
