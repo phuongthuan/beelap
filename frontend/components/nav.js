@@ -1,62 +1,42 @@
-import React from 'react';
 import Link from 'next/link';
+import NProgress from 'nprogress';
+import Router from 'next/router';
 
-const links = [{ href: 'https://github.com/phuongthuan', label: 'Github' }].map(
-  link => {
-    link.key = `nav-link-${link.href}-${link.label}`;
-    return link;
-  }
-);
+Router.events.on('routeChangeStart', url => {
+  console.log(`Loading: ${url}`);
+  NProgress.start();
+});
+Router.events.on('routeChangeComplete', () => NProgress.done());
+Router.events.on('routeChangeError', () => NProgress.done());
 
-const Nav = () => (
-  <nav>
-    <ul>
-      <li>
-        <Link prefetch href="/">
-          <a>Home</a>
-        </Link>
-        <Link href="/test">
-          <a>Go to Test</a>
-        </Link>
-      </li>
-      <ul>
-        {links.map(({ key, href, label }) => (
-          <li key={key}>
-            <Link href={href}>
-              <a>{label}</a>
-            </Link>
-          </li>
-        ))}
-      </ul>
-    </ul>
-
-    <style jsx>{`
-      :global(body) {
-        margin: 0;
-        font-family: -apple-system, BlinkMacSystemFont, Avenir Next, Avenir,
-          Helvetica, sans-serif;
-      }
-      nav {
-        text-align: center;
-      }
-      ul {
-        display: flex;
-        justify-content: space-between;
-      }
-      nav > ul {
-        padding: 4px 16px;
-      }
-      li {
-        display: flex;
-        padding: 6px 8px;
-      }
-      a {
-        color: #067df7;
-        text-decoration: none;
-        font-size: 13px;
-      }
-    `}</style>
-  </nav>
+const Nav = ({ className }) => (
+  <ul className={`${className} nav`}>
+    <li className="nav-item">
+      <Link href="/">
+        <a className="nav-link">Shop</a>
+      </Link>
+    </li>
+    <li className="nav-item">
+      <Link href="/sell">
+        <a className="nav-link">Sell</a>
+      </Link>
+    </li>
+    <li className="nav-item">
+      <Link href="/orders">
+        <a className="nav-link">My Orders</a>
+      </Link>
+    </li>
+    <li className="nav-item">
+      <Link href="/signin">
+        <a className="nav-link">Sign</a>
+      </Link>
+    </li>
+    <li className="nav-item">
+      <Link href="/">
+        <a className="nav-link">Account</a>
+      </Link>
+    </li>
+  </ul>
 );
 
 export default Nav;

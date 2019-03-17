@@ -9,6 +9,9 @@
         "libraryName": "antd",
         "style": true
       }
+    ],
+    [
+      "babel-plugin-styled-components"
     ]
   ]
 }
