@@ -24,6 +24,7 @@ class Signin extends Component {
             rules: [{ required: true, message: 'Please input your username!' }],
           })(
             <Input
+              size="large"
               prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
               placeholder="Username"
             />
@@ -34,6 +35,7 @@ class Signin extends Component {
             rules: [{ required: true, message: 'Please input your Password!' }],
           })(
             <Input
+              size="large"
               prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
               type="password"
               placeholder="Password"
@@ -42,11 +44,12 @@ class Signin extends Component {
         </Form.Item>
         <Form.Item>
           <Button
+            icon="login"
             type="primary"
             htmlType="submit"
             className="login-form-button"
           >
-            Log in
+            Signin
           </Button>
         </Form.Item>
       </Form>

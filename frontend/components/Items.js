@@ -36,7 +36,7 @@ class Items extends Component {
           return (
             <div className="row">
               {items.map(item => (
-                <div key={item.id} className="col-md-4 col-sm-6 p-4">
+                <div key={item.id} className="col-lg-3 col-md-4 col-sm-6 p-4">
                   <Item item={item} />
                 </div>
               ))}

@@ -2,8 +2,10 @@ import React, { Component } from 'react';
 import Router from 'next/router';
 import { Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
-import { Form, Icon, Input, Button, Upload, Modal } from 'antd';
+import { Form, Icon, Input, Button, Modal } from 'antd';
+
 import ErrorMessage from './ErrorMessage';
+import { UploadWrapper } from './styles/UploadStyles';
 
 const { TextArea } = Input;
 
@@ -148,7 +150,7 @@ class CreateItem extends Component {
                 >
                   {getFieldDecorator('title', {
                     rules: [{ required: true, message: 'Please input title!' }],
-                  })(<Input placeholder="Title" />)}
+                  })(<Input size="large" placeholder="Title" />)}
                 </Form.Item>
                 <Form.Item
                   validateStatus={itemDescriptionError ? 'error' : ''}
@@ -158,7 +160,9 @@ class CreateItem extends Component {
                     rules: [
                       { required: true, message: 'Please input description!' },
                     ],
-                  })(<TextArea placeholder="Description" rows={4} />)}
+                  })(
+                    <TextArea size="large" placeholder="Description" rows={7} />
+                  )}
                 </Form.Item>
                 <Form.Item
                   validateStatus={itemPriceError ? 'error' : ''}
@@ -166,14 +170,15 @@ class CreateItem extends Component {
                 >
                   {getFieldDecorator('price', {
                     rules: [{ required: true, message: 'Please input price!' }],
-                  })(<Input placeholder="Price" />)}
+                  })(<Input size="large" placeholder="Price" />)}
                 </Form.Item>
                 <Form.Item>
-                  <Input placeholder="Large Image" />
+                  <Input size="large" placeholder="Large Image" />
                 </Form.Item>
 
-                <div className="clearfix">
-                  <Upload
+                <div>
+                  <UploadWrapper
+                    size="large"
                     customRequest={e => this.uploadFile(e)}
                     listType="picture-card"
                     fileList={fileList}
@@ -181,7 +186,7 @@ class CreateItem extends Component {
                     onChange={this.handleChange}
                   >
                     {fileList.length >= 3 ? null : uploadButton}
-                  </Upload>
+                  </UploadWrapper>
                   <Modal
                     visible={previewVisible}
                     footer={null}
@@ -201,6 +206,7 @@ class CreateItem extends Component {
                     type="primary"
                     htmlType="submit"
                     disabled={hasErrors(getFieldsError())}
+                    icon="form"
                   >
                     Create
                   </Button>
@@ -209,17 +215,6 @@ class CreateItem extends Component {
             );
           }}
         </Mutation>
-        <style jsx>{`
-          .ant-upload-select-picture-card i {
-            font-size: 50px;
-            color: #999;
-          }
-
-          .ant-upload-select-picture-card .ant-upload-text {
-            margin-top: 8px;
-            color: #666;
-          }
-        `}</style>
       </div>
     );
   }

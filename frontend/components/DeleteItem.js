@@ -42,7 +42,7 @@ export default class DeleteItem extends Component {
       >
         {deleteItem => (
           <Popconfirm
-            title="Are you sure delete this task?"
+            title="Are you sure delete this item?"
             onConfirm={e => confirm(e, deleteItem)}
             okText="Yes"
             cancelText="No"

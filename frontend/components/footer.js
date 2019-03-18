@@ -10,7 +10,9 @@ const FooterWrapper = styled.div`
 
 const Footer = props => (
   <FooterWrapper {...props}>
-    <div>2019 © Beelap</div>
+    <div className="row justify-content-center">
+      <div className="d-flex align-self-center">2019 © Beelap</div>
+    </div>
   </FooterWrapper>
 );
 

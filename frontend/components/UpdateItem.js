@@ -108,7 +108,7 @@ class UpdateItem extends Component {
                           message: 'Please input description!',
                         },
                       ],
-                    })(<TextArea placeholder="Description" rows={4} />)}
+                    })(<TextArea placeholder="Description" rows={7} />)}
                   </Form.Item>
                   <Form.Item
                     validateStatus={itemPriceError ? 'error' : ''}
@@ -128,6 +128,7 @@ class UpdateItem extends Component {
                       type="primary"
                       htmlType="submit"
                       disabled={hasErrors(getFieldsError())}
+                      icon="edit"
                     >
                       Update
                     </Button>

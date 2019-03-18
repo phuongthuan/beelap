@@ -4,13 +4,22 @@ import { Card, Icon } from 'antd';
 
 import DeleteItem from './DeleteItem';
 import theme from '../lib/theme';
+import { CardWrapper } from './styles/CardStyles';
 
 const { Meta } = Card;
 
 const Item = ({ item }) => (
-  <Card
-    bodyStyle={{ paddingTop: 0, paddingBottom: '10px' }}
-    cover={item.image ? <img alt={item.title} src={item.image} /> : null}
+  <CardWrapper
+    bordered={false}
+    bodyStyle={{ paddingBottom: 0 }}
+    style={{ fontSize: '12px' }}
+    cover={
+      item.image ? (
+        <img alt={item.title} src={item.image} />
+      ) : (
+        <img alt="Not available" src="/static/noimage.jpg" />
+      )
+    }
     actions={[
       <Icon
         style={{ fontSize: 20, color: theme.Dark_Gunmetal }}
@@ -49,7 +58,7 @@ const Item = ({ item }) => (
         </div>
       }
     />
-  </Card>
+  </CardWrapper>
 );
 
 export default Item;

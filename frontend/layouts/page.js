@@ -12,17 +12,6 @@ const StyledPage = styled.div`
   color: ${props => props.theme.Dark_Gunmetal};
 `;
 
-const NavWrapper = styled(Nav)`
-  background-color: ${props => props.theme.Yellow_Orange};
-  li {
-    a {
-      color: ${props => props.theme.Onyx};
-    }
-  }
-  width: 100%;
-  height: 45px;
-`;
-
 const GlobalStyle = createGlobalStyle`
   @font-face {
     font-family: 'Roboto', sans-serif;
@@ -47,6 +36,15 @@ const GlobalStyle = createGlobalStyle`
     text-decoration: none;
     color: ${theme.Dark_Gunmetal};
   }
+
+  header {
+    width: 100%;
+    box-shadow: 0 5px 10px #f0f1f2;
+    height: 70px;
+  }
+  main {
+    padding: 3em 0;
+  }
 `;
 
 export default class Page extends Component {
@@ -61,8 +59,12 @@ export default class Page extends Component {
         <StyledPage className="container-fluid">
           <div className="row">
             <Head title="Beelap" />
-            <NavWrapper />
-            <div className="container py-5">{children}</div>
+            <header>
+              <div className="container">
+                <Nav />
+              </div>
+            </header>
+            <main className="container">{children}</main>
             <Footer theme={theme} />
           </div>
           <GlobalStyle />
