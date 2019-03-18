@@ -1,14 +1,37 @@
-scalar DateTime
-
-type Mutation {
-  createItem(title: String!, description: String!, price: Int!, image: String, largeImage: String): Item!
-  updateItem(id: ID!, title: String, description: String, price: Int, image: String, largeImage: String): Item!
-  deleteItem(id: ID!): Item!
+type SuccessMessage {
+  message: String
 }
 
 type Query {
   item(id: ID!): Item!
   items: [Item!]!
+}
+
+type Mutation {
+  createItem(title: String!, description: String!, price: Int!, image: String, largeImage: String): Item!
+  updateItem(id: ID!, title: String, description: String, price: Int, image: String, largeImage: String): Item!
+  deleteItem(id: ID!): Item!
+  signup(name: String!, email: String!, password: String!): User!
+  signin(email: String!, password: String!): User!
+  signout: SuccessMessage
+}
+
+enum Permission {
+  ADMIN
+  USER
+  ITEMCREATE
+  ITEMUPDATE
+  ITEMDELETE
+  PERMISSIONUPDATE
+}
+
+type User {
+  id: ID!
+  name: String!
+  email: String!
+  password: String!
+  permissions: [Permission]
+  cart: [CartItem!]!
 }
 
 type Item {
@@ -18,9 +41,33 @@ type Item {
   image: String
   largeImage: String
   price: Int!
-  createdAt: DateTime!
-  updatedAt: DateTime!
+  user: User!
 }
 
+type CartItem {
+  id: ID!
+  quantity: Int!
+  item: Item # relationship to Item
+  user: User! # relationship to User
+}
+
+type OrderItem {
+  id: ID!
+  title: String!
+  description: String!
+  image: String!
+  largeImage: String!
+  price: Int!
+  quantity: Int!
+  user: User
+}
+
+type Order {
+  id: ID!
+  items: [OrderItem!]!
+  total: Int!
+  user: User!
+  charge: String!
+}
 
 
