@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import gql from 'graphql-tag';
-import { Mutation } from 'react-apollo';
-import { Form, Icon, Input, Button, Upload, Modal } from 'antd';
 import Router from 'next/router';
+import { Mutation } from 'react-apollo';
+import gql from 'graphql-tag';
+import { Form, Icon, Input, Button, Upload, Modal } from 'antd';
+import ErrorMessage from './ErrorMessage';
 
 const { TextArea } = Input;
 
@@ -134,76 +135,79 @@ class CreateItem extends Component {
     return (
       <div>
         <Mutation mutation={CREATE_ITEM_MUTATION}>
-          {(createItem, { loading, error }) => (
-            <Form
-              layout="horizontal"
-              onSubmit={e => this.handleSubmit(e, createItem)}
-            >
-              <Form.Item
-                validateStatus={itemTitleError ? 'error' : ''}
-                help={itemTitleError || ''}
+          {(createItem, { loading, error }) => {
+            if (error) return <ErrorMessage message={error.message} />;
+            return (
+              <Form
+                layout="horizontal"
+                onSubmit={e => this.handleSubmit(e, createItem)}
               >
-                {getFieldDecorator('title', {
-                  rules: [{ required: true, message: 'Please input title!' }],
-                })(<Input placeholder="Title" />)}
-              </Form.Item>
-              <Form.Item
-                validateStatus={itemDescriptionError ? 'error' : ''}
-                help={itemDescriptionError || ''}
-              >
-                {getFieldDecorator('description', {
-                  rules: [
-                    { required: true, message: 'Please input description!' },
-                  ],
-                })(<TextArea placeholder="Description" rows={4} />)}
-              </Form.Item>
-              <Form.Item
-                validateStatus={itemPriceError ? 'error' : ''}
-                help={itemPriceError || ''}
-              >
-                {getFieldDecorator('price', {
-                  rules: [{ required: true, message: 'Please input price!' }],
-                })(<Input placeholder="Price" />)}
-              </Form.Item>
-              <Form.Item>
-                <Input placeholder="Large Image" />
-              </Form.Item>
+                <Form.Item
+                  validateStatus={itemTitleError ? 'error' : ''}
+                  help={itemTitleError || ''}
+                >
+                  {getFieldDecorator('title', {
+                    rules: [{ required: true, message: 'Please input title!' }],
+                  })(<Input placeholder="Title" />)}
+                </Form.Item>
+                <Form.Item
+                  validateStatus={itemDescriptionError ? 'error' : ''}
+                  help={itemDescriptionError || ''}
+                >
+                  {getFieldDecorator('description', {
+                    rules: [
+                      { required: true, message: 'Please input description!' },
+                    ],
+                  })(<TextArea placeholder="Description" rows={4} />)}
+                </Form.Item>
+                <Form.Item
+                  validateStatus={itemPriceError ? 'error' : ''}
+                  help={itemPriceError || ''}
+                >
+                  {getFieldDecorator('price', {
+                    rules: [{ required: true, message: 'Please input price!' }],
+                  })(<Input placeholder="Price" />)}
+                </Form.Item>
+                <Form.Item>
+                  <Input placeholder="Large Image" />
+                </Form.Item>
 
-              <div className="clearfix">
-                <Upload
-                  customRequest={e => this.uploadFile(e)}
-                  listType="picture-card"
-                  fileList={fileList}
-                  onPreview={this.handlePreview}
-                  onChange={this.handleChange}
-                >
-                  {fileList.length >= 3 ? null : uploadButton}
-                </Upload>
-                <Modal
-                  visible={previewVisible}
-                  footer={null}
-                  onCancel={this.handleCancel}
-                >
-                  <img
-                    alt="example"
-                    style={{ width: '100%' }}
-                    src={previewImage}
-                  />
-                </Modal>
-              </div>
+                <div className="clearfix">
+                  <Upload
+                    customRequest={e => this.uploadFile(e)}
+                    listType="picture-card"
+                    fileList={fileList}
+                    onPreview={this.handlePreview}
+                    onChange={this.handleChange}
+                  >
+                    {fileList.length >= 3 ? null : uploadButton}
+                  </Upload>
+                  <Modal
+                    visible={previewVisible}
+                    footer={null}
+                    onCancel={this.handleCancel}
+                  >
+                    <img
+                      alt="example"
+                      style={{ width: '100%' }}
+                      src={previewImage}
+                    />
+                  </Modal>
+                </div>
 
-              <Form.Item>
-                <Button
-                  loading={loading}
-                  type="primary"
-                  htmlType="submit"
-                  disabled={hasErrors(getFieldsError())}
-                >
-                  Create
-                </Button>
-              </Form.Item>
-            </Form>
-          )}
+                <Form.Item>
+                  <Button
+                    loading={loading}
+                    type="primary"
+                    htmlType="submit"
+                    disabled={hasErrors(getFieldsError())}
+                  >
+                    Create
+                  </Button>
+                </Form.Item>
+              </Form>
+            );
+          }}
         </Mutation>
         <style jsx>{`
           .ant-upload-select-picture-card i {
@@ -223,3 +227,4 @@ class CreateItem extends Component {
 
 const WrappedCreateItem = Form.create({ name: 'createItem_form' })(CreateItem);
 export default WrappedCreateItem;
+export { CREATE_ITEM_MUTATION };

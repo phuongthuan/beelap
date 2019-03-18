@@ -17,6 +17,7 @@
     "jsonwebtoken": "^8.5.0",
     "prisma": "^1.28.3",
     "prisma-client-lib": "^1.28.3",
+    "signale": "^1.4.0",
     "stripe": "^6.26.0"
   },
   "devDependencies": {
