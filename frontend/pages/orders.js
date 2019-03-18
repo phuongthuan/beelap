@@ -1,7 +1,3 @@
-import React, { Component } from 'react';
+const Orders = () => <div>My Orders</div>;
 
-export default class Orders extends Component {
-  render() {
-    return <div>My Orders component</div>;
-  }
-}
+export default Orders;

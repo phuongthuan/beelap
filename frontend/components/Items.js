@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
+import { Spin } from 'antd';
 
 import Item from './Item';
+import ErrorMessage from './ErrorMessage';
 
 const ALL_ITEMS_QUERY = gql`
   query ALL_ITEMS_QUERY {
@@ -19,25 +21,32 @@ const ALL_ITEMS_QUERY = gql`
   }
 `;
 
-export default class Items extends Component {
+class Items extends Component {
   render() {
     return (
-      <div className="row d-flex flex-column">
-        <Query query={ALL_ITEMS_QUERY}>
-          {(data, loading, error) => {
-            if (loading) return <div>Loading...</div>;
-            if (error) return <div>{error.message}</div>;
+      <Query query={ALL_ITEMS_QUERY}>
+        {(data, loading, error) => {
+          if (loading) return <Spin />;
+          if (error) return <ErrorMessage message={error.message} />;
 
-            const {
-              data: { items },
-            } = data;
+          const {
+            data: { items },
+          } = data;
 
-            console.log('items', items);
-
-            return items.map(item => <Item key={item.id} item={item} />);
-          }}
-        </Query>
-      </div>
+          return (
+            <div className="row">
+              {items.map(item => (
+                <div key={item.id} className="col-md-4 col-sm-6 p-4">
+                  <Item item={item} />
+                </div>
+              ))}
+            </div>
+          );
+        }}
+      </Query>
     );
   }
 }
+
+export default Items;
+export { ALL_ITEMS_QUERY };

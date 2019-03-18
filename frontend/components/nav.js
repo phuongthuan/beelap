@@ -2,10 +2,7 @@ import Link from 'next/link';
 import NProgress from 'nprogress';
 import Router from 'next/router';
 
-Router.events.on('routeChangeStart', url => {
-  console.log(`Loading: ${url}`);
-  NProgress.start();
-});
+Router.events.on('routeChangeStart', () => NProgress.start());
 Router.events.on('routeChangeComplete', () => NProgress.done());
 Router.events.on('routeChangeError', () => NProgress.done());
 
@@ -28,12 +25,7 @@ const Nav = ({ className }) => (
     </li>
     <li className="nav-item">
       <Link href="/signin">
-        <a className="nav-link">Sign</a>
-      </Link>
-    </li>
-    <li className="nav-item">
-      <Link href="/">
-        <a className="nav-link">Account</a>
+        <a className="nav-link">SignIn</a>
       </Link>
     </li>
   </ul>

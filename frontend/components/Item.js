@@ -1,49 +1,55 @@
 import React from 'react';
-import styled from 'styled-components';
 import Link from 'next/link';
+import { Card, Icon } from 'antd';
 
-import Button from './Button';
+import DeleteItem from './DeleteItem';
 import theme from '../lib/theme';
 
-const ItemWrapper = styled.div`
-  border-radius: 0;
-  margin-bottom: 1em;
-`;
-
-const ItemTitle = styled.div`
-  cursor: pointer;
-  text-decoration: underline;
-  font-weight: bold;
-`;
+const { Meta } = Card;
 
 const Item = ({ item }) => (
-  <ItemWrapper className="card">
-    <div className="card-body">
-      <Link
-        href={{
-          pathname: 'item',
-          query: { id: item.id },
-        }}
-      >
-        <ItemTitle className="card-title">{item.title}</ItemTitle>
-      </Link>
-      <div className="card-text">{item.description}</div>
-      <div className="card-text">{item.price}</div>
+  <Card
+    bodyStyle={{ paddingTop: 0, paddingBottom: '10px' }}
+    cover={item.image ? <img alt={item.title} src={item.image} /> : null}
+    actions={[
+      <Icon
+        style={{ fontSize: 20, color: theme.Dark_Gunmetal }}
+        type="shopping-cart"
+      />,
+      // Edit Button
       <Link
         href={{
           pathname: 'update',
           query: { id: item.id },
         }}
       >
-        <Button bgcolor={theme.Onyx}>Edit</Button>
-      </Link>
-      <Button textcolor={theme.Onyx} bgcolor={theme.Yellow_Orange}>
-        Add to card
-      </Button>
-      <Button bgcolor={theme.Rufous}>Delete</Button>
-    </div>
-    <div>{item.image && <img src={item.image} alt={item.title} />}</div>
-  </ItemWrapper>
+        <Icon
+          style={{ fontSize: 20, color: theme.Yellow_Orange }}
+          type="edit"
+        />
+      </Link>,
+      <DeleteItem id={item.id} />,
+    ]}
+  >
+    <Meta
+      title={
+        <Link
+          href={{
+            pathname: 'item',
+            query: { id: item.id },
+          }}
+        >
+          <a>{item.title}</a>
+        </Link>
+      }
+      description={
+        <div>
+          <h1 style={{ color: theme.Rufous }}>${item.price}</h1>
+          <p>{item.description}</p>
+        </div>
+      }
+    />
+  </Card>
 );
 
 export default Item;

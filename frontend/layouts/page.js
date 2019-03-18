@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styled, { ThemeProvider, createGlobalStyle } from 'styled-components';
+
 import Nav from '../components/nav';
 import Footer from '../components/footer';
 import Head from '../components/head';
@@ -19,6 +20,7 @@ const NavWrapper = styled(Nav)`
     }
   }
   width: 100%;
+  height: 45px;
 `;
 
 const GlobalStyle = createGlobalStyle`
@@ -57,14 +59,10 @@ export default class Page extends Component {
     return (
       <ThemeProvider theme={theme}>
         <StyledPage className="container-fluid">
-          <Head title="Beelap" />
-          <div className="row p-0">
+          <div className="row">
+            <Head title="Beelap" />
             <NavWrapper />
-          </div>
-          <div className="row p-0 my-5">
-            <div className="container">{children}</div>
-          </div>
-          <div className="row p-0">
+            <div className="container py-5">{children}</div>
             <Footer theme={theme} />
           </div>
           <GlobalStyle />

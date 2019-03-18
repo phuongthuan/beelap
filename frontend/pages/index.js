@@ -1,9 +1,5 @@
 import Items from '../components/Items';
 
-const Home = () => (
-  <div>
-    <Items />
-  </div>
-);
+const Home = () => <Items />;
 
 export default Home;
