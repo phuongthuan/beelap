@@ -37,6 +37,10 @@ const GlobalStyle = createGlobalStyle`
     color: ${theme.Dark_Gunmetal};
   }
 
+  p, h1, h2 {
+    margin: 0;
+  }
+  
   header {
     width: 100%;
     box-shadow: 0 5px 10px #f0f1f2;

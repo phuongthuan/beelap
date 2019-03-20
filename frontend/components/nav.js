@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import PropTypes from 'prop-types';
 import NProgress from 'nprogress';
 import Router from 'next/router';
 import styled from 'styled-components';
@@ -42,6 +43,11 @@ const Nav = ({ className }) => (
       </Link>
     </li>
     <li className="nav-item">
+      <Link href="/signup">
+        <a className="nav-link">Signup</a>
+      </Link>
+    </li>
+    <li className="nav-item">
       <a className="nav-link">
         <BadgeWrapper count={5}>
           <Icon style={{ fontSize: '27px' }} type="shopping-cart" />
@@ -50,5 +56,9 @@ const Nav = ({ className }) => (
     </li>
   </NavWrapper>
 );
+
+Nav.propTypes = {
+  className: PropTypes.string,
+};
 
 export default Nav;
