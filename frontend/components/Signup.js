@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
-import { Form, Button, Card, CardHeader, CardBody, Alert } from 'reactstrap';
+import { Form, Button, Card, CardBody, Alert } from 'reactstrap';
 import InputField from './InputField';
-import { validate } from '../lib/utils';
+import { validateSignup } from '../lib/utils';
 import ErrorMessage from './ErrorMessage';
 
 const SIGNUP_MUTATION = gql`
@@ -38,7 +38,7 @@ export default class Signup extends Component {
     e.preventDefault();
     const { name, email, password } = this.state;
 
-    const errors = validate(name, email, password);
+    const errors = validateSignup(name, email, password);
 
     if (errors.length > 0) {
       this.setState({ errors });

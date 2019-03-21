@@ -7,6 +7,7 @@ type SuccessMessage {
 type Query {
   item(id: ID!): Item!
   items: [Item!]!
+  me: User
 }
 
 type Mutation {

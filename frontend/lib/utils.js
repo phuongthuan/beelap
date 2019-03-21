@@ -1,4 +1,4 @@
-export function validate(name, email, password) {
+export function validateSignup(name, email, password) {
   const errors = [];
   if (name.length === 0) {
     errors.push('Please enter name');
@@ -14,6 +14,20 @@ export function validate(name, email, password) {
 
   if (password.length < 5) {
     errors.push('Password should be at least 6 characters');
+  }
+
+  return errors;
+}
+
+export function validateSignin(email, password) {
+  const errors = [];
+
+  if (email.length === 0) {
+    errors.push('Please enter email');
+  }
+
+  if (password.length === 0) {
+    errors.push('Please enter password');
   }
 
   return errors;

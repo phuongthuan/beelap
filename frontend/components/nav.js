@@ -2,59 +2,56 @@ import Link from 'next/link';
 import PropTypes from 'prop-types';
 import NProgress from 'nprogress';
 import Router from 'next/router';
-import styled from 'styled-components';
+import { Nav as NavReactstrap, NavItem, NavLink } from 'reactstrap';
 
-import { Icon } from 'antd';
-import { BadgeWrapper } from './styles/BadgeStyles';
+import User from './User';
+import ErrorMessage from './ErrorMessage';
 
 Router.events.on('routeChangeStart', () => NProgress.start());
 Router.events.on('routeChangeComplete', () => NProgress.done());
 Router.events.on('routeChangeError', () => NProgress.done());
 
-const NavWrapper = styled.ul`
-  padding-top: 15px;
-  li {
-    a {
-      color: ${props => props.theme.Onyx};
-    }
-  }
-`;
-
 const Nav = ({ className }) => (
-  <NavWrapper className={`${className} nav justify-content-end`}>
-    <li className="nav-item">
+  <NavReactstrap pills className={`${className} pt-4 justify-content-end`}>
+    <NavItem active>
       <Link href="/">
-        <a className="nav-link">Shop</a>
+        <NavLink>
+          <u>Shop</u>
+        </NavLink>
       </Link>
-    </li>
-    <li className="nav-item">
+    </NavItem>
+    <NavItem>
       <Link href="/sell">
-        <a className="nav-link">Sell</a>
+        <NavLink>Sell</NavLink>
       </Link>
-    </li>
-    <li className="nav-item">
+    </NavItem>
+    <NavItem>
       <Link href="/orders">
-        <a className="nav-link">Orders</a>
+        <NavLink>Orders</NavLink>
       </Link>
-    </li>
-    <li className="nav-item">
-      <Link href="/signin">
-        <a className="nav-link">Signin</a>
-      </Link>
-    </li>
-    <li className="nav-item">
-      <Link href="/signup">
-        <a className="nav-link">Signup</a>
-      </Link>
-    </li>
-    <li className="nav-item">
-      <a className="nav-link">
-        <BadgeWrapper count={5}>
-          <Icon style={{ fontSize: '27px' }} type="shopping-cart" />
-        </BadgeWrapper>
-      </a>
-    </li>
-  </NavWrapper>
+    </NavItem>
+    <User>
+      {({ data: { me }, loading, error }) => {
+        if (loading) return <div>Loading...</div>;
+        if (error) return <ErrorMessage message={error.message} />;
+        if (me) return <a className="nav-link">{me.name}</a>;
+        return (
+          <>
+            <NavItem>
+              <Link href="/signin">
+                <NavLink>Signin</NavLink>
+              </Link>
+            </NavItem>
+            <NavItem>
+              <Link href="/signup">
+                <NavLink>Signup</NavLink>
+              </Link>
+            </NavItem>
+          </>
+        );
+      }}
+    </User>
+  </NavReactstrap>
 );
 
 Nav.propTypes = {

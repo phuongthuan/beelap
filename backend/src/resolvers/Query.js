@@ -5,6 +5,13 @@ const Query = {
   },
   item: async (parent, { id }, context) => {
     return context.prisma.item({ id });
+  },
+  me: async (parent, args, context) => {
+    const { userId } = context.request;
+    if (!userId) {
+      throw new Error(`User not found`);
+    }
+    return context.prisma.user({ id: userId });
   }
 };
 
