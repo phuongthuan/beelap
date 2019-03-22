@@ -5,9 +5,20 @@ const logger = require('../../logger');
 
 const Mutation = {
   async createItem(parent, args, context) {
-    // TODO: Check if they are logged in
     logger.debug('createItem Request: ', JSON.stringify(args, null, 2));
-    const item = await context.prisma.createItem({ ...args });
+
+    const { userId } = context.request;
+
+    if (!userId) {
+      throw new Erorr(`You must logged in`);
+    }
+
+    const item = await context.prisma.createItem({ 
+      user: {
+        connect: { id: userId }
+      },
+      ...args,
+     });
 
     return item;
   },

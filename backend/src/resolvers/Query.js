@@ -9,7 +9,7 @@ const Query = {
   me: async (parent, args, context) => {
     const { userId } = context.request;
     if (!userId) {
-      throw new Error(`User not found`);
+      return null;
     }
     return context.prisma.user({ id: userId });
   }

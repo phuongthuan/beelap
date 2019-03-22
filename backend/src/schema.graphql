@@ -45,8 +45,6 @@ type Item {
   largeImage: String
   price: Int!
   user: User!
-  createdAt: DateTime!
-  updatedAt: DateTime!
 }
 
 type CartItem {
