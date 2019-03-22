@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Router from 'next/router';
 import { Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
 import { Form, Button, Card, CardBody, Alert } from 'reactstrap';
@@ -44,6 +45,9 @@ export default class Signin extends Component {
     this.setState({ errors: [] });
     await signinMutation();
     this.setState({ email: '', password: '' });
+    Router.push({
+      pathname: '/',
+    });
   };
 
   render() {

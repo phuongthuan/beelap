@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
+import Router from 'next/router';
+import PropTypes from 'prop-types';
 import { Mutation, Query } from 'react-apollo';
 import gql from 'graphql-tag';
-import { Form, Input, Button } from 'antd';
+import { Form, Card, CardBody, Alert, Button } from 'reactstrap';
 
-const { TextArea } = Input;
+import InputField from './InputField';
+import ErrorMessage from './ErrorMessage';
 
 const SINGLE_ITEM_QUERY = gql`
   query SINGLE_ITEM_QUERY($id: ID!) {
@@ -37,103 +40,106 @@ const UPDATE_ITEM_MUTATION = gql`
   }
 `;
 
-function hasErrors(fieldsError) {
-  return Object.keys(fieldsError).some(field => fieldsError[field]);
-}
-
 class UpdateItem extends Component {
-  handleSubmit = (e, updateItemMutation) => {
-    e.preventDefault();
-    this.props.form.validateFields(async (err, values) => {
-      if (!err) {
-        await updateItemMutation({
-          variables: {
-            id: this.props.id,
-            ...values,
-            price: Number(values.price),
-          },
-        });
+  state = {
+    errors: [],
+  };
 
-        console.log('Updated');
-      }
+  handleChange = (value, name) => {
+    let val;
+    switch (name) {
+      case 'price':
+        val = Number(value);
+        break;
+      default:
+        val = value;
+    }
+
+    this.setState({ [name]: val });
+  };
+
+  handleSubmit = async (e, updateItemMutation) => {
+    e.preventDefault();
+    delete this.state.errors;
+    await updateItemMutation({
+      variables: {
+        ...this.state,
+        id: this.props.id,
+      },
     });
+    Router.push('/');
   };
 
   render() {
-    const {
-      getFieldDecorator,
-      getFieldsError,
-      getFieldError,
-      isFieldTouched,
-    } = this.props.form;
+    const { errors } = this.state;
     const { id } = this.props;
-    const itemTitleError = isFieldTouched('title') && getFieldError('title');
-    const itemPriceError = isFieldTouched('price') && getFieldError('price');
-    const itemDescriptionError =
-      isFieldTouched('description') && getFieldError('description');
     return (
       <Query query={SINGLE_ITEM_QUERY} variables={{ id }}>
         {({ data, loading, error }) => {
           if (loading) return <div>Loading...</div>;
-          if (error) return <div>{error.message}</div>;
-          if (!data.item) return <p>No item found for ID {id}</p>;
-          const { item } = data;
-          return (
-            <Mutation mutation={UPDATE_ITEM_MUTATION}>
-              {(updateItem, { loadingMutation, error }) => (
-                <Form
-                  layout="horizontal"
-                  onSubmit={e => this.handleSubmit(e, updateItem)}
-                >
-                  <Form.Item
-                    validateStatus={itemTitleError ? 'error' : ''}
-                    help={itemTitleError || ''}
-                  >
-                    {getFieldDecorator('title', {
-                      initialValue: item.title,
-                      rules: [
-                        { required: true, message: 'Please input title!' },
-                      ],
-                    })(<Input placeholder="Title" />)}
-                  </Form.Item>
-                  <Form.Item
-                    validateStatus={itemDescriptionError ? 'error' : ''}
-                    help={itemDescriptionError || ''}
-                  >
-                    {getFieldDecorator('description', {
-                      initialValue: item.description,
-                      rules: [
-                        {
-                          required: true,
-                          message: 'Please input description!',
-                        },
-                      ],
-                    })(<TextArea placeholder="Description" rows={7} />)}
-                  </Form.Item>
-                  <Form.Item
-                    validateStatus={itemPriceError ? 'error' : ''}
-                    help={itemPriceError || ''}
-                  >
-                    {getFieldDecorator('price', {
-                      initialValue: item.price,
-                      rules: [
-                        { required: true, message: 'Please input price!' },
-                      ],
-                    })(<Input placeholder="Price" />)}
-                  </Form.Item>
 
-                  <Form.Item>
-                    <Button
-                      loading={loadingMutation}
-                      type="primary"
-                      htmlType="submit"
-                      disabled={hasErrors(getFieldsError())}
-                      icon="edit"
+          if (error) return <div>{error.message}</div>;
+
+          if (!data.item) return <p>No item found for ID {id}</p>;
+
+          const { item } = data;
+
+          return (
+            <Mutation mutation={UPDATE_ITEM_MUTATION} variables={this.state}>
+              {(updateItem, { loadingMutation, error }) => (
+                <Card className="mx-auto" style={{ maxWidth: '450px' }}>
+                  <CardBody>
+                    <h2 className="text-center pb-3">Update Item</h2>
+                    <Form
+                      method="POST"
+                      onSubmit={e => this.handleSubmit(e, updateItem)}
                     >
-                      Update
-                    </Button>
-                  </Form.Item>
-                </Form>
+                      {errors.length > 0 && (
+                        <Alert color="danger">
+                          {errors.map(err => (
+                            <p size="small" key={err}>
+                              {err}
+                            </p>
+                          ))}
+                        </Alert>
+                      )}
+                      {error && <ErrorMessage message={error.message} />}
+                      <InputField
+                        label="Name"
+                        id="title"
+                        size="lg"
+                        name="title"
+                        defaultValue={item.title}
+                        placeholder="Title"
+                        handleChange={this.handleChange}
+                      />
+                      <InputField
+                        label="Description"
+                        type="textarea"
+                        id="description"
+                        rows={6}
+                        size="lg"
+                        defaultValue={item.description}
+                        name="description"
+                        placeholder="Description"
+                        handleChange={this.handleChange}
+                      />
+                      <InputField
+                        label="Price"
+                        id="price"
+                        size="lg"
+                        defaultValue={String(item.price)}
+                        type="number"
+                        name="price"
+                        placeholder="Price"
+                        handleChange={this.handleChange}
+                      />
+                      <Button type="submit" color="primary">
+                        {loadingMutation ? 'Updating...' : 'Update'}
+                      </Button>
+                    </Form>
+                  </CardBody>
+                </Card>
               )}
             </Mutation>
           );
@@ -143,5 +149,8 @@ class UpdateItem extends Component {
   }
 }
 
-const WrappedUpdateItem = Form.create({ name: 'updateItem_form' })(UpdateItem);
-export default WrappedUpdateItem;
+UpdateItem.propTypes = {
+  id: PropTypes.string.isRequired,
+};
+
+export default UpdateItem;

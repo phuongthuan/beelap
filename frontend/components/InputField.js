@@ -1,7 +1,6 @@
 import React from 'react';
 import { FormGroup, Input, Label } from 'reactstrap';
 import PropTypes from 'prop-types';
-import _isEmpty from 'lodash/isEmpty';
 
 class InputField extends React.Component {
   handleChange = e => {
@@ -16,11 +15,13 @@ class InputField extends React.Component {
       type,
       name,
       value,
+      defaultValue,
       style,
       label,
       size,
       placeholder,
       className,
+      rows,
     } = this.props;
 
     return (
@@ -29,8 +30,10 @@ class InputField extends React.Component {
         <Input
           id={id}
           name={name}
+          defaultValue={defaultValue}
           value={value}
           onChange={this.handleChange}
+          rows={rows}
           type={type}
           style={style}
           bsSize={size}
@@ -46,11 +49,13 @@ InputField.propTypes = {
   id: PropTypes.string.isRequired,
   type: PropTypes.string,
   name: PropTypes.string.isRequired,
-  value: PropTypes.string.isRequired,
+  value: PropTypes.string,
+  defaultValue: PropTypes.string,
   style: PropTypes.object,
   label: PropTypes.string,
   placeholder: PropTypes.string,
   size: PropTypes.string,
+  rows: PropTypes.number,
   className: PropTypes.string,
   handleChange: PropTypes.func.isRequired,
 };

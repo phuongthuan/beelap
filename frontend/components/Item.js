@@ -1,64 +1,45 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import Link from 'next/link';
-import { Card, Icon } from 'antd';
+import { Card, CardBody, Button, ButtonGroup } from 'reactstrap';
 
 import DeleteItem from './DeleteItem';
-import theme from '../lib/theme';
-import { CardWrapper } from './styles/CardStyles';
-
-const { Meta } = Card;
 
 const Item = ({ item }) => (
-  <CardWrapper
-    bordered={false}
-    bodyStyle={{ paddingBottom: 0 }}
-    style={{ fontSize: '12px' }}
-    cover={
-      item.image ? (
-        <img alt={item.title} src={item.image} />
-      ) : (
-        <img alt="Not available" src="/static/noimage.jpg" />
-      )
-    }
-    actions={[
-      <Icon
-        style={{ fontSize: 20, color: theme.Dark_Gunmetal }}
-        type="shopping-cart"
-      />,
-      // Edit Button
+  <Card>
+    <CardBody>
+      <img width="100%" src={item.image} alt={item.title} />
       <Link
         href={{
-          pathname: 'update',
+          pathname: 'item',
           query: { id: item.id },
         }}
       >
-        <Icon
-          style={{ fontSize: 20, color: theme.Yellow_Orange }}
-          type="edit"
-        />
-      </Link>,
-      <DeleteItem id={item.id} />,
-    ]}
-  >
-    <Meta
-      title={
+        <h2>{item.title}</h2>
+      </Link>
+
+      <p className="text-danger">${item.price}</p>
+
+      <p className="font-weight-light">{item.description}</p>
+
+      <ButtonGroup>
+        <Button>Card</Button>
         <Link
           href={{
-            pathname: 'item',
+            pathname: 'update',
             query: { id: item.id },
           }}
         >
-          <a>{item.title}</a>
+          <Button>Edit</Button>
         </Link>
-      }
-      description={
-        <div>
-          <h1 style={{ color: theme.Rufous }}>${item.price}</h1>
-          <p>{item.description}</p>
-        </div>
-      }
-    />
-  </CardWrapper>
+        <DeleteItem id={item.id} />
+      </ButtonGroup>
+    </CardBody>
+  </Card>
 );
+
+Item.propTypes = {
+  item: PropTypes.object.isRequired,
+};
 
 export default Item;

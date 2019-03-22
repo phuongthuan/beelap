@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import styled, { ThemeProvider, createGlobalStyle } from 'styled-components';
 
 import Nav from '../components/nav';
-import Footer from '../components/footer';
+// import Footer from '../components/footer';
 import Head from '../components/head';
 import theme from '../lib/theme';
 
@@ -44,7 +44,6 @@ const GlobalStyle = createGlobalStyle`
   header {
     width: 100%;
     box-shadow: 0 5px 10px #f0f1f2;
-    height: 70px;
   }
   main {
     padding: 3em 0;
@@ -69,7 +68,7 @@ export default class Page extends Component {
               </div>
             </header>
             <main className="container">{children}</main>
-            <Footer theme={theme} />
+            {/* <Footer theme={theme} /> */}
           </div>
           <GlobalStyle />
         </StyledPage>
