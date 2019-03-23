@@ -1,33 +1,27 @@
-export function validateSignup(name, email, password) {
+export function validate(data) {
   const errors = [];
-  if (name.length === 0) {
+  if (data.name === '') {
     errors.push('Please enter name');
   }
 
-  if (email.length === 0) {
+  if (data.email === '') {
     errors.push('Please enter email');
   }
 
-  if (password.length === 0) {
+  if (data.password === '') {
     errors.push('Please enter password');
   }
 
-  if (password.length < 5) {
-    errors.push('Password should be at least 6 characters');
+  if (data.title === '') {
+    errors.push('Please enter title');
   }
 
-  return errors;
-}
-
-export function validateSignin(email, password) {
-  const errors = [];
-
-  if (email.length === 0) {
-    errors.push('Please enter email');
+  if (data.description === '') {
+    errors.push('Please enter desciption');
   }
 
-  if (password.length === 0) {
-    errors.push('Please enter password');
+  if (data.price === '') {
+    errors.push('Please enter price');
   }
 
   return errors;

@@ -2,11 +2,12 @@ import React, { Component } from 'react';
 import Router from 'next/router';
 import { Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
-import { Form, Button, Card, CardBody, Alert } from 'reactstrap';
+import { Alert } from 'reactstrap';
 
-import InputField from './InputField';
-import { validateSignin } from '../lib/utils';
+import { validate } from '../lib/utils';
 import ErrorMessage from './ErrorMessage';
+import BeeButton from './styles/BeeButton';
+import Form from './styles/Form';
 import { CURRENT_USER_QUERY } from './User';
 
 const SIGNIN_MUTATION = gql`
@@ -26,23 +27,23 @@ export default class Signin extends Component {
     errors: [],
   };
 
-  handleChange = (value, name) => {
+  handleChange = e => {
     this.setState({
-      [name]: value,
+      [e.target.name]: e.target.value,
     });
   };
 
   handleSubmit = async (e, signinMutation) => {
     e.preventDefault();
-    const { email, password } = this.state;
-
-    const errors = validateSignin(email, password);
+    const errors = validate(this.state);
 
     if (errors.length > 0) {
       this.setState({ errors });
       return;
     }
+
     this.setState({ errors: [] });
+
     await signinMutation();
     this.setState({ email: '', password: '' });
     Router.push({
@@ -59,44 +60,48 @@ export default class Signin extends Component {
         refetchQueries={[{ query: CURRENT_USER_QUERY }]}
       >
         {(signin, { loading, error }) => (
-          <Card className="mx-auto" style={{ maxWidth: '350px' }}>
-            <CardBody>
-              <h2 className="text-center pb-3">Sign In</h2>
-              <Form method="POST" onSubmit={e => this.handleSubmit(e, signin)}>
-                {errors.length > 0 && (
-                  <Alert color="danger">
-                    {errors.map(err => (
-                      <p size="small" key={err}>
-                        {err}
-                      </p>
-                    ))}
-                  </Alert>
-                )}
-                {error && <ErrorMessage message={error.message} />}
-                <InputField
-                  id="email"
-                  size="lg"
-                  value={email}
-                  type="email"
-                  name="email"
-                  placeholder="Email"
-                  handleChange={this.handleChange}
-                />
-                <InputField
-                  id="password"
-                  size="lg"
-                  value={password}
-                  type="password"
-                  name="password"
-                  placeholder="Password"
-                  handleChange={this.handleChange}
-                />
-                <Button type="submit" color="primary">
-                  {loading ? 'Sending...' : 'Sign In'}
-                </Button>
-              </Form>
-            </CardBody>
-          </Card>
+          <Form
+            className="mt-5"
+            method="POST"
+            onSubmit={e => this.handleSubmit(e, signin)}
+          >
+            <h2 className="text-center pb-3">Sign In</h2>
+            {errors.length > 0 && (
+              <Alert color="danger">
+                {errors.map(err => (
+                  <p size="small" key={err}>
+                    {err}
+                  </p>
+                ))}
+              </Alert>
+            )}
+            {error && <ErrorMessage message={error.message} />}
+            <label htmlFor="Email">
+              Email
+              <input
+                id="email"
+                value={email}
+                type="email"
+                name="email"
+                placeholder="Email"
+                onChange={this.handleChange}
+              />
+            </label>
+            <label htmlFor="Password">
+              Password
+              <input
+                id="password"
+                value={password}
+                type="password"
+                name="password"
+                placeholder="Password"
+                onChange={this.handleChange}
+              />
+            </label>
+            <BeeButton type="submit">
+              {loading ? 'Sending...' : 'Sign In'}
+            </BeeButton>
+          </Form>
         )}
       </Mutation>
     );

@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
-import { Button } from 'reactstrap';
 
 import { ALL_ITEMS_QUERY } from './Items';
 
@@ -35,7 +34,7 @@ class DeleteItem extends React.Component {
         update={this.update}
       >
         {(deleteItem, { error }) => (
-          <Button
+          <button
             onClick={() => {
               // eslint-disable-next-line no-restricted-globals
               if (confirm('Are you sure you want to delete this item?')) {
@@ -45,8 +44,8 @@ class DeleteItem extends React.Component {
               }
             }}
           >
-            Delete
-          </Button>
+            {this.props.children}
+          </button>
         )}
       </Mutation>
     );
@@ -55,6 +54,7 @@ class DeleteItem extends React.Component {
 
 DeleteItem.propTypes = {
   id: PropTypes.string.isRequired,
+  children: PropTypes.string.isRequired,
 };
 
 export default DeleteItem;

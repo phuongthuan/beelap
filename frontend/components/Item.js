@@ -1,41 +1,44 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Link from 'next/link';
-import { Card, CardBody, Button, ButtonGroup } from 'reactstrap';
 
 import DeleteItem from './DeleteItem';
+import ItemStyles from './styles/ItemStyles';
+import Title from './styles/Title';
+import PriceTag from './styles/PriceTag';
+import AddToCart from './AddToCart';
 
 const Item = ({ item }) => (
-  <Card>
-    <CardBody>
-      <img width="100%" src={item.image} alt={item.title} />
+  <ItemStyles>
+    {item.image && <img src={item.image} alt={item.title} />}
+    <Title>
       <Link
         href={{
-          pathname: 'item',
+          pathname: '/item',
           query: { id: item.id },
         }}
       >
-        <h2>{item.title}</h2>
+        <a>{item.title}</a>
       </Link>
+    </Title>
 
-      <p className="text-danger">${item.price}</p>
+    <PriceTag>${item.price}</PriceTag>
 
-      <p className="font-weight-light">{item.description}</p>
+    <p>{item.description}</p>
 
-      <ButtonGroup>
-        <Button>Card</Button>
-        <Link
-          href={{
-            pathname: 'update',
-            query: { id: item.id },
-          }}
-        >
-          <Button>Edit</Button>
-        </Link>
-        <DeleteItem id={item.id} />
-      </ButtonGroup>
-    </CardBody>
-  </Card>
+    <div className="buttonList">
+      <Link
+        href={{
+          pathname: 'update',
+          query: { id: item.id },
+        }}
+      >
+        <a>Edit</a>
+      </Link>
+      <AddToCart />
+      <DeleteItem id={item.id}>Delete</DeleteItem>
+    </div>
+  </ItemStyles>
 );
 
 Item.propTypes = {

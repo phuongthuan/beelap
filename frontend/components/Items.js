@@ -11,6 +11,10 @@ const ALL_ITEMS_QUERY = gql`
     items {
       id
       title
+      category {
+        id
+        name
+      }
       description
       price
       image
@@ -23,26 +27,18 @@ class Items extends Component {
   render() {
     return (
       <Query query={ALL_ITEMS_QUERY}>
-        {(data, loading, error) => {
+        {({ data, loading, error }) => {
           if (loading) return <Spin />;
           if (error) return <ErrorMessage message={error.message} />;
-
-          const {
-            data: { items },
-          } = data;
-
-          if (items) {
-            return (
-              <div className="row">
-                {items.map(item => (
-                  <div key={item.id} className="col-lg-3 col-md-4 col-sm-6 p-4">
-                    <Item item={item} />
-                  </div>
-                ))}
-              </div>
-            );
-          }
-          return null;
+          return (
+            <div className="row">
+              {data.items.map(item => (
+                <div key={item.id} className="col-lg-3 col-md-4 col-sm-6 p-4">
+                  <Item item={item} />
+                </div>
+              ))}
+            </div>
+          );
         }}
       </Query>
     );

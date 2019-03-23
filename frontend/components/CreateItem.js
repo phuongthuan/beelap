@@ -3,16 +3,20 @@ import React, { Component } from 'react';
 import Router from 'next/router';
 import { Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
-import { Form, Card, CardBody, Button, Alert, Input } from 'reactstrap';
+import { Alert } from 'reactstrap';
 
-import InputField from './InputField';
+import BeeButton from './styles/BeeButton';
+import Form from './styles/Form';
+import { validate } from '../lib/utils';
 
 import ErrorMessage from './ErrorMessage';
 import { ALL_ITEMS_QUERY } from './Items';
+import Category from './Category';
 
 const CREATE_ITEM_MUTATION = gql`
   mutation CREATE_ITEM_MUTATION(
     $title: String!
+    $category: CategoryCreateOneInput
     $description: String!
     $price: Int!
     $image: String
@@ -20,6 +24,7 @@ const CREATE_ITEM_MUTATION = gql`
   ) {
     createItem(
       title: $title
+      category: $category
       description: $description
       price: $price
       image: $image
@@ -27,6 +32,10 @@ const CREATE_ITEM_MUTATION = gql`
     ) {
       id
       title
+      category {
+        id
+        name
+      }
       description
       price
       image
@@ -39,6 +48,7 @@ class CreateItem extends Component {
   state = {
     isLoadingImage: false,
     title: '',
+    category: '',
     description: '',
     price: '',
     image: '',
@@ -46,18 +56,34 @@ class CreateItem extends Component {
     errors: [],
   };
 
-  handleChange = (value, name) => {
-    console.log(name, value);
-    this.setState({ [name]: value });
+  handleChange = e => {
+    this.setState({ [e.target.name]: e.target.value });
   };
 
   handleSubmit = async (e, createItemMutation) => {
     e.preventDefault();
-    const { title, description, price, image, largeImage } = this.state;
+    const {
+      title,
+      category,
+      description,
+      price,
+      image,
+      largeImage,
+    } = this.state;
+
+    const errors = validate(this.state);
+
+    if (errors.length > 0) {
+      this.setState({ errors });
+      return;
+    }
 
     await createItemMutation({
       variables: {
         title,
+        category: {
+          connect: { id: category },
+        },
         description,
         price: Number(price),
         image,
@@ -111,7 +137,7 @@ class CreateItem extends Component {
   };
 
   render() {
-    const { title, description, price, errors } = this.state;
+    const { title, category, description, price, errors } = this.state;
     return (
       <div>
         <Mutation
@@ -121,63 +147,93 @@ class CreateItem extends Component {
           {(createItem, { loading, error }) => {
             if (error) return <ErrorMessage message={error.message} />;
             return (
-              <Card className="mx-auto" style={{ maxWidth: '450px' }}>
-                <CardBody>
-                  <h2 className="text-center pb-3">Create New Item</h2>
-                  <Form
-                    method="POST"
-                    onSubmit={e => this.handleSubmit(e, createItem)}
+              <Form
+                width="500px"
+                className="mt-5"
+                method="POST"
+                onSubmit={e => this.handleSubmit(e, createItem)}
+              >
+                {errors.length > 0 && (
+                  <Alert color="danger">
+                    {errors.map(err => (
+                      <p size="small" key={err}>
+                        {err}
+                      </p>
+                    ))}
+                  </Alert>
+                )}
+                {error && <ErrorMessage message={error.message} />}
+                <h2 className="text-center pb-3">Create New Item</h2>
+                <label htmlFor="Title">
+                  Title
+                  <input
+                    id="title"
+                    name="title"
+                    value={title}
+                    onChange={this.handleChange}
+                  />
+                </label>
+
+                {/* eslint-disable-next-line jsx-a11y/label-has-for */}
+                <label htmlFor="cagtegory">
+                  Category
+                  <select
+                    style={{ height: '26.42px' }}
+                    id="category"
+                    name="category"
+                    value={category}
+                    onChange={this.handleChange}
                   >
-                    {errors.length > 0 && (
-                      <Alert color="danger">
-                        {errors.map(err => (
-                          <p size="small" key={err}>
-                            {err}
-                          </p>
-                        ))}
-                      </Alert>
-                    )}
-                    {error && <ErrorMessage message={error.message} />}
-                    <InputField
-                      label="Name"
-                      id="title"
-                      size="lg"
-                      name="title"
-                      value={title}
-                      handleChange={this.handleChange}
-                    />
-                    <InputField
-                      label="Description"
-                      type="textarea"
-                      id="description"
-                      rows={6}
-                      size="lg"
-                      value={description}
-                      name="description"
-                      handleChange={this.handleChange}
-                    />
-                    <InputField
-                      label="Price"
-                      id="price"
-                      size="lg"
-                      value={price}
-                      type="number"
-                      name="price"
-                      handleChange={this.handleChange}
-                    />
-                    <Input
-                      id="file"
-                      type="file"
-                      name="file"
-                      onChange={this.uploadFile}
-                    />
-                    {this.showImage()}
-                    <Button type="submit" color="primary">
-                      {loading ? 'Creating...' : 'Create'}
-                    </Button>
-                  </Form>
-                </CardBody>
-              </Card>
+                    <option>Select...</option>
+                    <Category>
+                      {({ data, loadingCate, error }) => {
+                        if (loadingCate) return <p>Loading...</p>;
+                        if (!data.categories) return null;
+
+                        return data.categories.map(cat => (
+                          <option key={cat.id} value={cat.id}>
+                            {cat.name}
+                          </option>
+                        ));
+                      }}
+                    </Category>
+                  </select>
+                </label>
+                <label htmlFor="Description">
+                  Description
+                  <input
+                    type="textarea"
+                    id="description"
+                    rows={6}
+                    value={description}
+                    name="description"
+                    onChange={this.handleChange}
+                  />
+                </label>
+                <label htmlFor="Price">
+                  Price
+                  <input
+                    id="price"
+                    value={price}
+                    type="number"
+                    name="price"
+                    onChange={this.handleChange}
+                  />
+                </label>
+                <label htmlFor="File">
+                  Image
+                  <input
+                    id="file"
+                    type="file"
+                    name="file"
+                    onChange={this.uploadFile}
+                  />
+                </label>
+                {this.showImage()}
+                <BeeButton type="submit" className="mt-3">
+                  {loading ? 'Creating...' : 'Create'}
+                </BeeButton>
+              </Form>
             );
           }}
         </Mutation>
