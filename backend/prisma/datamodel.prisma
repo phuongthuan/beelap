@@ -22,10 +22,18 @@ type Item {
   id: ID! @unique
   title: String!
   description: String!
+  category: Category
   image: String
   largeImage: String
   price: Int!
   user: User!
+}
+
+type Category {
+  id: ID! @unique
+  name: String! @unique
+  description: String
+  items: [Item!]!
 }
 
 type CartItem {

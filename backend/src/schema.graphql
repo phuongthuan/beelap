@@ -1,18 +1,26 @@
-scalar DateTime
-
 type SuccessMessage {
   message: String
 }
 
+input CategoryCreateOneInput {
+  connect: CategoryWhereUniqueInput!
+}
+
+input CategoryWhereUniqueInput {
+  id: ID!
+  name: String
+}
+
 type Query {
   item(id: ID!): Item!
-  items: [Item!]!
+  items(searchTerm: String, orderBy: String): [Item]!
+  categories: [Category!]!
   me: User
 }
 
 type Mutation {
-  createItem(title: String!, description: String!, price: Int!, image: String, largeImage: String): Item!
-  updateItem(id: ID!, title: String, description: String, price: Int, image: String, largeImage: String): Item!
+  createItem(title: String!, category: CategoryCreateOneInput, description: String!, price: Int!, image: String, largeImage: String): Item!
+  updateItem(id: ID!, title: String, category: CategoryCreateOneInput, description: String, price: Int, image: String, largeImage: String): Item!
   deleteItem(id: ID!): Item!
   signup(name: String!, email: String!, password: String!): User!
   signin(email: String!, password: String!): User!
@@ -41,10 +49,18 @@ type Item {
   id: ID!
   title: String!
   description: String!
+  category: Category # relationship to Category
   image: String
   largeImage: String
   price: Int!
   user: User!
+}
+
+type Category {
+  id: ID!
+  name: String!
+  description: String
+  items: [Item!]!
 }
 
 type CartItem {
@@ -72,5 +88,8 @@ type Order {
   user: User!
   charge: String!
 }
+
+
+
 
 

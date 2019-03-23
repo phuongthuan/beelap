@@ -3,7 +3,7 @@ const { prisma } = require('./generated/prisma-client')
 const cookieParser = require('cookie-parser');
 const jwt = require('jsonwebtoken');
 
-const resolvers = require('./resolvers')
+const resolvers = require('./resolvers');
 
 const server = new GraphQLServer({
   typeDefs: 'src/schema.graphql',

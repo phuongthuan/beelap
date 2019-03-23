@@ -17,6 +17,10 @@ var models = [
     embedded: false
   },
   {
+    name: "Category",
+    embedded: false
+  },
+  {
     name: "CartItem",
     embedded: false
   },

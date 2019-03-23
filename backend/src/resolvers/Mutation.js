@@ -10,37 +10,90 @@ const Mutation = {
     const { userId } = context.request;
 
     if (!userId) {
-      throw new Erorr(`You must logged in`);
+      throw new Error(`You must logged in`);
     }
 
     const item = await context.prisma.createItem({ 
       user: {
-        connect: { id: userId }
+        connect: { id: userId },
       },
+      category: args.category,
       ...args,
-     });
+     }).$fragment(`
+        fragment ItemWithCategories on Item {
+          id
+          title
+          category {
+            id
+            name
+          }
+          description
+          price
+          image
+          largeImage
+        }
+    `);
+
+     console.log('create item', JSON.stringify(item, null, 0))
 
     return item;
   },
+
   async updateItem(parent, args, context) {
-    const updates = { ...args };
+
     logger.debug('updateItem Request: ', JSON.stringify(args, null, 2));
+
+    const updates = { ...args };
+
+    if (!context.request.userId) {
+      throw new Error(`You must logged in!`);
+    }
+
     delete updates.id;
 
-    return context.prisma.updateItem({
-      data: updates,
+    const updatedItem = await context.prisma.updateItem({
+      data: {
+        category: args.category,
+        ...updates,
+      },
       where: { id: args.id }
-    })
+    }).$fragment(`
+        fragment ItemWithCategories on Item {
+          id
+          title
+          category {
+            id
+            name
+          }
+          description
+          price
+          image
+          largeImage
+        }
+    `);
+
+    console.log('update item', JSON.stringify(updatedItem, null, 0))
+
+    return updatedItem;
   },
+
   async deleteItem(parent, { id }, context) {
+
     logger.debug('deleteItem Request: ', JSON.stringify({ id }, null, 2));
+
+    if (!context.request.userId) {
+      throw new Error(`You must logged in!`);
+    }
+
     const itemExists = await context.prisma.$exists.item({ id });
+
     if (!itemExists) {
       throw new Error(`Item not found or you're not the author`);
     }
 
     return context.prisma.deleteItem({ id });
   },
+
   async signup(parent, args, context) {
     // lowercase their email
     args.email = args.email.toLowerCase();
@@ -67,6 +120,7 @@ const Mutation = {
     // Finalllllly we return the user to the browser
     return user;
   },
+
   async signin(parent, { email, password }, context) {
     // 1. check if there is a user with that email
     const user = await context.prisma.user({ email });
@@ -91,6 +145,7 @@ const Mutation = {
     // 5. Return the user
     return user;
   },
+
   signout(parent, args, context) {
     context.response.clearCookie('token');
     return { message: 'Goodbye!' };
