@@ -13,7 +13,7 @@ input CategoryWhereUniqueInput {
 
 type Query {
   item(id: ID!): Item!
-  items(searchTerm: String, orderBy: String): [Item]!
+  items(searchTerm: String, category: String, orderBy: String): [Item]!
   categories: [Category!]!
   me: User
 }

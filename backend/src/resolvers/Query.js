@@ -1,7 +1,7 @@
 const Query = {
-  items: async (parent, args, context, info) => {
+  items: async (parent, args, context) => {
 
-    const { searchTerm, orderBy = "createdAt_DESC" } = args;
+    const { searchTerm, category, orderBy = "createdAt_DESC" } = args;
 
     const allItems = await context.prisma.items({ 
       orderBy,
@@ -9,7 +9,8 @@ const Query = {
         OR: [
           { title_contains: searchTerm },
           { description_contains: searchTerm }
-        ]
+        ],
+        category: { id: category }
       }
     }).$fragment(`
         fragment ItemWithCategories on Item {
