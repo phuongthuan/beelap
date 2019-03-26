@@ -15,6 +15,8 @@ const SINGLE_ITEM_QUERY = gql`
     item(id: $id) {
       id
       title
+      image
+      largeImage
       category {
         id
         name
@@ -195,3 +197,4 @@ UpdateItem.propTypes = {
 };
 
 export default UpdateItem;
+export { SINGLE_ITEM_QUERY };

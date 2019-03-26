@@ -5,6 +5,7 @@ import styled, { ThemeProvider, createGlobalStyle } from 'styled-components';
 import Header from '../components/Header';
 // import Footer from '../components/footer';
 import Meta from '../components/Meta';
+import Sidebar from '../components/Sidebar';
 
 const theme = {
   lemon: '#F3C622',
@@ -13,6 +14,7 @@ const theme = {
   onyx: '#3A3637',
   yellow: '#FCD615',
   red: '#992409',
+  lightgrey: '#E1E1E1',
   maxWidth: '1000px',
   bs: '0 2px 8px rgba(0, 0, 0, 0.1)',
 };
@@ -59,7 +61,6 @@ const GlobalStyle = createGlobalStyle`
   
   header {
     width: 100%;
-    box-shadow: 0 5px 10px ${props => props.theme.onyx};
     margin-bottom: 3rem;
   }
   main {
@@ -79,7 +80,14 @@ export default class Page extends Component {
         <StyledPage>
           <Meta title="Beelap" />
           <Header />
-          <div className="container">{children}</div>
+          <div className="container">
+            <div className="row">
+              <div className="col-2">
+                <Sidebar />
+              </div>
+              <div className="col-10">{children}</div>
+            </div>
+          </div>
           {/* <Footer theme={theme} /> */}
           <GlobalStyle />
         </StyledPage>

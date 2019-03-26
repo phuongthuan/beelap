@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
 const NavStyles = styled.ul`
+  height: 8rem;
   margin: 0;
   padding: 0;
   display: flex;
@@ -64,6 +65,7 @@ const NavStyles = styled.ul`
     width: 100%;
     justify-content: center;
     font-size: 1.5rem;
+    height: 4rem;
   }
 `;
 

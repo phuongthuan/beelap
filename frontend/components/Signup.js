@@ -7,6 +7,7 @@ import { validate } from '../lib/utils';
 import ErrorMessage from './ErrorMessage';
 import Form from './styles/Form';
 import BeeButton from './styles/BeeButton';
+import { CURRENT_USER_QUERY } from './User';
 
 const SIGNUP_MUTATION = gql`
   mutation SIGNUP_MUTATION(
@@ -53,7 +54,11 @@ export default class Signup extends Component {
   render() {
     const { name, email, password, errors } = this.state;
     return (
-      <Mutation mutation={SIGNUP_MUTATION} variables={this.state}>
+      <Mutation
+        mutation={SIGNUP_MUTATION}
+        refetchQueries={[{ query: CURRENT_USER_QUERY }]}
+        variables={this.state}
+      >
         {(signup, { loading, error }) => (
           <Form
             className="mt-5"

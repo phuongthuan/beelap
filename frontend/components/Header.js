@@ -2,9 +2,11 @@ import Link from 'next/link';
 import styled from 'styled-components';
 import NProgress from 'nprogress';
 import Router from 'next/router';
+import Search from './Search';
 import Nav from './nav';
 
 const Logo = styled.h1`
+  padding-top: 1.5rem;
   font-size: 4rem;
   margin-left: 2rem;
   position: relative;
@@ -12,20 +14,22 @@ const Logo = styled.h1`
   transform: skew(-7deg);
   a {
     padding: 0.5rem 1rem;
-    background: ${props => props.theme.onyx};
-    color: ${props => props.theme.yellow};
+    background: ${props => props.theme.yellow};
+    color: ${props => props.theme.onyx};
     text-transform: uppercase;
     text-decoration: none;
   }
   @media (max-width: 1300px) {
+    padding-top: 0.5rem;
     margin: 0;
     text-align: center;
+    height: 6rem;
   }
 `;
 
 const StyledHeader = styled.header`
   .bar {
-    /* border-bottom: 10px solid ${props => props.theme.red}; */
+    border-bottom: 10px solid ${props => props.theme.onyx};
     display: grid;
     grid-template-columns: auto 1fr;
     justify-content: space-between;
@@ -55,6 +59,9 @@ const Header = () => (
         </Link>
       </Logo>
       <Nav />
+    </div>
+    <div className="sub-bar">
+      <Search />
     </div>
   </StyledHeader>
 );

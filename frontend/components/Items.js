@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
-import { Spin } from 'antd';
 
 import Item from './Item';
 import ErrorMessage from './ErrorMessage';
@@ -28,7 +27,7 @@ class Items extends Component {
     return (
       <Query query={ALL_ITEMS_QUERY}>
         {({ data, loading, error }) => {
-          if (loading) return <Spin />;
+          if (loading) return <p>Loading...</p>;
           if (error) return <ErrorMessage message={error.message} />;
           return (
             <div className="row">
