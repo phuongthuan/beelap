@@ -35,7 +35,7 @@ const Item = ({ item }) => (
       >
         <a>Edit</a>
       </Link>
-      <AddToCart />
+      <AddToCart id={item.id} />
       <DeleteItem id={item.id}>Delete</DeleteItem>
     </div>
   </ItemStyles>

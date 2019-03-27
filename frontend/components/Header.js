@@ -2,8 +2,10 @@ import Link from 'next/link';
 import styled from 'styled-components';
 import NProgress from 'nprogress';
 import Router from 'next/router';
+
 import Search from './Search';
 import Nav from './nav';
+import Cart from './Cart';
 
 const Logo = styled.h1`
   padding-top: 1.5rem;
@@ -63,6 +65,7 @@ const Header = () => (
     <div className="sub-bar">
       <Search />
     </div>
+    <Cart />
   </StyledHeader>
 );
 

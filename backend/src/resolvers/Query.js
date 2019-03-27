@@ -1,3 +1,5 @@
+const logger = require('../../logger');
+
 const Query = {
   items: async (parent, args, context) => {
 
@@ -55,7 +57,55 @@ const Query = {
     if (!userId) {
       return null;
     }
-    return context.prisma.user({ id: userId });
+    return context.prisma.user({ id: userId }).$fragment(`
+      fragment UserInfo on User {
+        id
+        name
+        email
+        permissions
+        cart {
+          id
+          quantity
+          item {
+            id
+            price
+            image
+            title
+            description
+          }
+        }
+      }
+    `);
+  },
+  order: async (parent, { id }, context) => {
+
+    logger.debug('get Order detail id: ', id);
+
+    const { userId } = context.request;
+
+    if (!userId) throw new Error(`You must logged in!`);
+
+    const order = await context.prisma.order({ id }).$fragment(`
+      fragment OrderInfoDetail on Order {
+        id
+        total
+        charge
+        createdAt
+        items {
+          id
+          title
+          description
+          price
+          image
+          quantity
+        }
+        user {
+          id
+        }
+      }
+    `);
+
+    return order;
   }
 };
 

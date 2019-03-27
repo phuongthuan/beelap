@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import styled, { ThemeProvider, createGlobalStyle } from 'styled-components';
 
 import Header from '../components/Header';
-// import Footer from '../components/footer';
 import Meta from '../components/Meta';
 import Sidebar from '../components/Sidebar';
 
@@ -15,6 +14,7 @@ const theme = {
   yellow: '#FCD615',
   red: '#992409',
   lightgrey: '#E1E1E1',
+  offWhite: '#EDEDED',
   maxWidth: '1000px',
   bs: '0 2px 8px rgba(0, 0, 0, 0.1)',
 };
@@ -80,7 +80,7 @@ export default class Page extends Component {
         <StyledPage>
           <Meta title="Beelap" />
           <Header />
-          <div className="container">
+          <div className="container-fluid">
             <div className="row">
               <div className="col-2">
                 <Sidebar />
@@ -88,7 +88,6 @@ export default class Page extends Component {
               <div className="col-10">{children}</div>
             </div>
           </div>
-          {/* <Footer theme={theme} /> */}
           <GlobalStyle />
         </StyledPage>
       </ThemeProvider>

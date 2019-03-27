@@ -1,14 +1,7 @@
+scalar DateTime
+
 type SuccessMessage {
   message: String
-}
-
-input CategoryCreateOneInput {
-  connect: CategoryWhereUniqueInput!
-}
-
-input CategoryWhereUniqueInput {
-  id: ID!
-  name: String
 }
 
 type Query {
@@ -16,6 +9,7 @@ type Query {
   items(searchTerm: String, category: String, orderBy: String): [Item]!
   categories: [Category!]!
   me: User
+  order(id: ID!): Order
 }
 
 type Mutation {
@@ -25,6 +19,9 @@ type Mutation {
   signup(name: String!, email: String!, password: String!): User!
   signin(email: String!, password: String!): User!
   signout: SuccessMessage
+  addToCart(id: ID!): CartItem
+  removeFromCart(id: ID!): CartItem
+  createOrder(token: String!): Order!
 }
 
 enum Permission {
@@ -87,7 +84,18 @@ type Order {
   total: Int!
   user: User!
   charge: String!
+  createdAt: DateTime!
 }
+
+input CategoryCreateOneInput {
+  connect: CategoryWhereUniqueInput!
+}
+
+input CategoryWhereUniqueInput {
+  id: ID!
+  name: String
+}
+
 
 
 

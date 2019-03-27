@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import gql from 'graphql-tag';
 import { Query } from 'react-apollo';
+import Head from 'next/head';
 
 import ErrorMessage from '../../components/ErrorMessage';
 import Item from '../../components/Item';
@@ -25,26 +26,31 @@ const ALL_ITEMS_BY_CATEGORY = gql`
 `;
 
 const Category = ({ query }) => (
-  <Query query={ALL_ITEMS_BY_CATEGORY} variables={{ category: query.id }}>
-    {({ data, loading, error }) => {
-      if (loading) return <p>Loading...</p>;
+  <>
+    <Head>
+      <title>Beelap - Category {query.id}</title>
+    </Head>
+    <Query query={ALL_ITEMS_BY_CATEGORY} variables={{ category: query.id }}>
+      {({ data, loading, error }) => {
+        if (loading) return <p>Loading...</p>;
 
-      if (error) return <ErrorMessage message={error.message} />;
+        if (error) return <ErrorMessage message={error.message} />;
 
-      if (data.items.length === 0)
-        return <ItemNotFound>No Item found!</ItemNotFound>;
+        if (data.items.length === 0)
+          return <ItemNotFound>No Item found!</ItemNotFound>;
 
-      return (
-        <div className="row">
-          {data.items.map(item => (
-            <div key={item.id} className="col-lg-3 col-md-4 col-sm-6 p-4">
-              <Item item={item} />
-            </div>
-          ))}
-        </div>
-      );
-    }}
-  </Query>
+        return (
+          <div className="row">
+            {data.items.map(item => (
+              <div key={item.id} className="col-lg-3 col-md-4 col-sm-6 p-4">
+                <Item item={item} />
+              </div>
+            ))}
+          </div>
+        );
+      }}
+    </Query>
+  </>
 );
 
 Category.propTypes = {

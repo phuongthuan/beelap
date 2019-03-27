@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const stripe = require('../stripe');
 
 const logger = require('../../logger');
 
@@ -34,7 +35,7 @@ const Mutation = {
         }
     `);
 
-     console.log('create item', JSON.stringify(item, null, 0))
+     logger.debug('create item', JSON.stringify(item, null, 0))
 
     return item;
   },
@@ -72,7 +73,7 @@ const Mutation = {
         }
     `);
 
-    console.log('update item', JSON.stringify(updatedItem, null, 0))
+    logger.debug('update item', JSON.stringify(updatedItem, null, 0))
 
     return updatedItem;
   },
@@ -149,6 +150,153 @@ const Mutation = {
   signout(parent, args, context) {
     context.response.clearCookie('token');
     return { message: 'Goodbye!' };
+  },
+
+  async addToCart(parent, args, context) {
+
+    logger.debug('args', JSON.stringify(args, null, 2));
+
+    logger.debug('cartItem id', args.id);
+
+    // Make sure they're signed in.
+    const { userId } = context.request;
+    logger.debug('userId', userId);
+
+    if (!userId) {
+      throw new Error('You must be signed in soooon');
+    }
+    // 2. Query the users current cart
+    const [existingCartItem] = await context.prisma.cartItems({
+      where: {
+        user: { id: userId },
+        item: { id: args.id },
+      },
+    });
+
+    logger.debug('existingCartItem', existingCartItem);
+
+    // 3. Check if that item is already in their cart and increment by 1 if it is
+    if (existingCartItem) {
+      console.log('This item is already in their cart');
+      return context.prisma.updateCartItem(
+        {
+          where: { id: existingCartItem.id },
+          data: { quantity: existingCartItem.quantity + 1 },
+        }
+      );
+    }
+    // 4. If its not, create a fresh CartItem for that user!
+    return context.prisma.createCartItem({
+      user: {
+        connect: { id: userId },
+      },
+      item: {
+        connect: { id: args.id },
+      },
+    });
+  },
+  async removeFromCart(parent, args, context) {
+
+    logger.debug('cartItem id', args.id);
+
+    // 1. Find the cart item
+    const cartItem = await context.prisma.cartItem({ id: args.id }).$fragment(`
+        fragment UserOnCartItem on CartItem {
+          id
+          user {
+            id
+          }
+        }
+    `);
+
+    logger.debug('cartItem found', cartItem);
+    
+    // 1.5 Make sure we found an item
+    if (!cartItem) throw new Error('No CartItem Found!');
+    // 2. Make sure they own that cart item
+    if (cartItem.user.id !== context.request.userId) {
+      throw new Error('You are not the owner of this cartitem');
+    }
+    // 3. Delete that cart item
+    return context.prisma.deleteCartItem({ id: args.id });
+  },
+  async createOrder(parent, args, context) {
+    // 1. Query the current user and make sure they are signed in
+    const { userId } = context.request;
+    if (!userId) throw new Error('You must be signed in to complete this order.');
+    const user = await context.prisma.user({ id: userId })
+    .$fragment(`
+      fragment UserInfoCheckout on User {
+        id
+        name
+        email
+        cart {
+          id
+          quantity
+          item { title price id description image largeImage }
+        }
+      }
+    `);
+
+    // 2. recalculate the total for the price
+    const amount = user.cart.reduce(
+      (tally, cartItem) => tally + cartItem.item.price * cartItem.quantity,
+      0
+    );
+    console.log(`Going to charge for a total of ${amount}`);
+
+    logger.debug('token', args.token)
+
+    // 3. Create the stripe charge (turn token into $$$)
+    const charge = await stripe.charges.create({
+      amount,
+      currency: 'USD',
+      source: args.token,
+    });
+
+    // 4. Convert the CartItems to OrderItems
+    const orderItems = user.cart.map(cartItem => {
+      const orderItem = {
+        ...cartItem.item,
+        quantity: cartItem.quantity,
+        user: { connect: { id: userId } },
+      };
+      delete orderItem.id;
+      return orderItem;
+    });
+
+    // 5. create the Order
+    const order = await context.prisma.createOrder({
+      total: charge.amount,
+      charge: charge.id,
+      items: { create: orderItems },
+      user: { connect: { id: userId } },
+    }).$fragment(`
+      fragment OrderDetail on Order {
+        id
+        total
+        charge
+        items {
+          id
+          title
+        }
+        user {
+          id
+          name
+          email
+        }
+      }
+    `);
+
+    // 6. Clean up - clear the users cart, delete cartItems
+    const cartItemIds = user.cart.map(cartItem => cartItem.id);
+
+    await context.prisma.deleteManyCartItems({
+      id_in: cartItemIds
+    });
+    // 7. Return the Order to the client
+    return order;
+
   },
 }
 
