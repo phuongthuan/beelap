@@ -4,7 +4,7 @@ import styled, { ThemeProvider, createGlobalStyle } from 'styled-components';
 
 import Header from '../components/Header';
 import Meta from '../components/Meta';
-import Sidebar from '../components/Sidebar';
+import AlertMessage from '../components/AlertMessage';
 
 const theme = {
   lemon: '#F3C622',
@@ -80,15 +80,9 @@ export default class Page extends Component {
         <StyledPage>
           <Meta title="Beelap" />
           <Header />
-          <div className="container-fluid">
-            <div className="row">
-              <div className="col-2">
-                <Sidebar />
-              </div>
-              <div className="col-10">{children}</div>
-            </div>
-          </div>
+          {children}
           <GlobalStyle />
+          <AlertMessage />
         </StyledPage>
       </ThemeProvider>
     );

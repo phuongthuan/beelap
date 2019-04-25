@@ -4,9 +4,11 @@ import PleaseSignIn from '../components/PleaseSignIn';
 import Order from '../components/Order';
 
 const OrderPage = ({ query }) => (
-  <PleaseSignIn>
-    <Order id={query.id} />
-  </PleaseSignIn>
+  <div className="container">
+    <PleaseSignIn>
+      <Order id={query.id} />
+    </PleaseSignIn>
+  </div>
 );
 
 OrderPage.propTypes = {

@@ -7,9 +7,11 @@ type SuccessMessage {
 type Query {
   item(id: ID!): Item!
   items(searchTerm: String, category: String, orderBy: String): [Item]!
+  users: [User]!
   categories: [Category!]!
   me: User
   order(id: ID!): Order
+  orders: [Order]!
 }
 
 type Mutation {
@@ -18,10 +20,12 @@ type Mutation {
   deleteItem(id: ID!): Item!
   signup(name: String!, email: String!, password: String!): User!
   signin(email: String!, password: String!): User!
+  updatePermissions(permissions: [Permission], userId: ID!): User
   signout: SuccessMessage
   addToCart(id: ID!): CartItem
   removeFromCart(id: ID!): CartItem
   createOrder(token: String!): Order!
+  updateUser(name: String): User!
 }
 
 enum Permission {
@@ -38,6 +42,8 @@ type User {
   name: String!
   email: String!
   password: String!
+  resetToken: String
+  resetTokenExpiry: Float
   permissions: [Permission]
   cart: [CartItem!]!
 }

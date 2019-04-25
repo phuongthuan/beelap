@@ -159,10 +159,9 @@ class UpdateItem extends Component {
                   </label>
                   <label htmlFor="Description">
                     Description
-                    <input
-                      type="textarea"
+                    <textarea
                       id="description"
-                      rows={6}
+                      rows={7}
                       defaultValue={item.description}
                       name="description"
                       onChange={this.handleChange}

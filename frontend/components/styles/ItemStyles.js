@@ -21,12 +21,13 @@ const ItemStyles = styled.div`
     display: flex;
     width: 100%;
     border-top: 1px solid ${props => props.theme.onyx};
-    justify-content: space-between;
+    justify-content: center;
     & > * {
       cursor: pointer;
       background: white;
       border: 0;
-      font-size: 1rem;
+      font-size: 1.3rem;
+      font-weight: bold;
       padding: 1rem;
     }
   }

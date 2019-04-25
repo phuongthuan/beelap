@@ -6,6 +6,7 @@ import Head from 'next/head';
 
 import ErrorMessage from '../../components/ErrorMessage';
 import Item from '../../components/Item';
+import SideBar from '../../components/Sidebar';
 import ItemNotFound from '../../components/styles/ItemNoFound';
 
 const ALL_ITEMS_BY_CATEGORY = gql`
@@ -40,12 +41,24 @@ const Category = ({ query }) => (
           return <ItemNotFound>No Item found!</ItemNotFound>;
 
         return (
-          <div className="row">
-            {data.items.map(item => (
-              <div key={item.id} className="col-lg-3 col-md-4 col-sm-6 p-4">
-                <Item item={item} />
+          <div className="container-fluid">
+            <div className="row">
+              <div className="col-md-2">
+                <SideBar />
               </div>
-            ))}
+              <div className="col-md-10">
+                <div className="row">
+                  {data.items.map(item => (
+                    <div
+                      key={item.id}
+                      className="col-lg-3 col-md-4 col-sm-6 p-4"
+                    >
+                      <Item item={item} />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
         );
       }}

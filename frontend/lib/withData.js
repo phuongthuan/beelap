@@ -33,10 +33,37 @@ function createClient({ headers }) {
 
             return data;
           },
+
+          writeAlertMessage(_, variables, { cache }) {
+            const data = {
+              data: {
+                alertMessage: variables.message,
+                alertOpen: true,
+              },
+            };
+
+            cache.writeData(data);
+
+            return data;
+          },
+          hideAlertMessage(_, variables, { cache }) {
+            const data = {
+              data: {
+                alertMessage: '',
+                alertOpen: false,
+              },
+            };
+
+            cache.writeData(data);
+
+            return data;
+          },
         },
       },
       defaults: {
         cartOpen: false,
+        alertOpen: false,
+        alertMessage: '',
       },
     },
   });

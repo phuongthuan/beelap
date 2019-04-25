@@ -12,6 +12,7 @@ import { validate } from '../lib/utils';
 import ErrorMessage from './ErrorMessage';
 import { ALL_ITEMS_QUERY } from './Items';
 import Category from './Category';
+import { WRITE_ALERT_MESSAGE } from './Profile';
 
 const CREATE_ITEM_MUTATION = gql`
   mutation CREATE_ITEM_MUTATION(
@@ -60,7 +61,7 @@ class CreateItem extends Component {
     this.setState({ [e.target.name]: e.target.value });
   };
 
-  handleSubmit = async (e, createItemMutation) => {
+  handleSubmit = async (e, createItemMutation, writeAlertMessageMutation) => {
     e.preventDefault();
     const {
       title,
@@ -78,7 +79,7 @@ class CreateItem extends Component {
       return;
     }
 
-    await createItemMutation({
+    const newItem = await createItemMutation({
       variables: {
         title,
         category: {
@@ -91,9 +92,17 @@ class CreateItem extends Component {
       },
     });
 
-    Router.push({
-      pathname: '/',
-    });
+    if (newItem) {
+      writeAlertMessageMutation({
+        variables: {
+          message: 'Create new item successfully!',
+        },
+      });
+    }
+
+    // Router.push({
+    //   pathname: '/',
+    // });
   };
 
   uploadFile = async e => {
@@ -147,93 +156,98 @@ class CreateItem extends Component {
           {(createItem, { loading, error }) => {
             if (error) return <ErrorMessage message={error.message} />;
             return (
-              <Form
-                width="500px"
-                className="mt-5"
-                method="POST"
-                onSubmit={e => this.handleSubmit(e, createItem)}
-              >
-                {errors.length > 0 && (
-                  <Alert color="danger">
-                    {errors.map(err => (
-                      <p size="small" key={err}>
-                        {err}
-                      </p>
-                    ))}
-                  </Alert>
-                )}
-                {error && <ErrorMessage message={error.message} />}
-                <h2 className="text-center pb-3">Create New Item</h2>
-                <label htmlFor="Title">
-                  Title
-                  <input
-                    id="title"
-                    name="title"
-                    value={title}
-                    onChange={this.handleChange}
-                  />
-                </label>
-
-                {/* eslint-disable-next-line jsx-a11y/label-has-for */}
-                <label htmlFor="cagtegory">
-                  Category
-                  <select
-                    style={{ height: '26.42px' }}
-                    id="category"
-                    name="category"
-                    value={category}
-                    onChange={this.handleChange}
+              <Mutation mutation={WRITE_ALERT_MESSAGE}>
+                {writeAlertMessage => (
+                  <Form
+                    width="500px"
+                    className="mt-5"
+                    method="POST"
+                    onSubmit={e =>
+                      this.handleSubmit(e, createItem, writeAlertMessage)
+                    }
                   >
-                    <option>Select...</option>
-                    <Category>
-                      {({ data, loadingCate, error }) => {
-                        if (loadingCate) return <p>Loading...</p>;
-                        if (!data.categories) return null;
+                    {errors.length > 0 && (
+                      <Alert color="danger">
+                        {errors.map(err => (
+                          <p size="small" key={err}>
+                            {err}
+                          </p>
+                        ))}
+                      </Alert>
+                    )}
+                    {error && <ErrorMessage message={error.message} />}
+                    <h2 className="text-center pb-3">Create New Item</h2>
+                    <label htmlFor="Title">
+                      Title
+                      <input
+                        id="title"
+                        name="title"
+                        value={title}
+                        onChange={this.handleChange}
+                      />
+                    </label>
 
-                        return data.categories.map(cat => (
-                          <option key={cat.id} value={cat.id}>
-                            {cat.name}
-                          </option>
-                        ));
-                      }}
-                    </Category>
-                  </select>
-                </label>
-                <label htmlFor="Description">
-                  Description
-                  <input
-                    type="textarea"
-                    id="description"
-                    rows={6}
-                    value={description}
-                    name="description"
-                    onChange={this.handleChange}
-                  />
-                </label>
-                <label htmlFor="Price">
-                  Price
-                  <input
-                    id="price"
-                    value={price}
-                    type="number"
-                    name="price"
-                    onChange={this.handleChange}
-                  />
-                </label>
-                <label htmlFor="File">
-                  Image
-                  <input
-                    id="file"
-                    type="file"
-                    name="file"
-                    onChange={this.uploadFile}
-                  />
-                </label>
-                {this.showImage()}
-                <BeeButton type="submit" className="mt-3">
-                  {loading ? 'Creating...' : 'Create'}
-                </BeeButton>
-              </Form>
+                    {/* eslint-disable-next-line jsx-a11y/label-has-for */}
+                    <label htmlFor="cagtegory">
+                      Category
+                      <select
+                        style={{ height: '26.42px' }}
+                        id="category"
+                        name="category"
+                        value={category}
+                        onChange={this.handleChange}
+                      >
+                        <option>Select...</option>
+                        <Category>
+                          {({ data, loadingCate, error }) => {
+                            if (loadingCate) return <p>Loading...</p>;
+                            if (!data.categories) return null;
+
+                            return data.categories.map(cat => (
+                              <option key={cat.id} value={cat.id}>
+                                {cat.name}
+                              </option>
+                            ));
+                          }}
+                        </Category>
+                      </select>
+                    </label>
+                    <label htmlFor="Description">
+                      Description
+                      <textarea
+                        id="description"
+                        rows={8}
+                        value={description}
+                        name="description"
+                        onChange={this.handleChange}
+                      />
+                    </label>
+                    <label htmlFor="Price">
+                      Price
+                      <input
+                        id="price"
+                        value={price}
+                        type="number"
+                        name="price"
+                        onChange={this.handleChange}
+                      />
+                    </label>
+                    <label htmlFor="File">
+                      Image
+                      <input
+                        id="file"
+                        type="file"
+                        name="file"
+                        onChange={this.uploadFile}
+                      />
+                    </label>
+                    {this.showImage()}
+                    <BeeButton type="submit" className="mt-3">
+                      {loading ? 'Creating...' : 'Create'}
+                    </BeeButton>
+                  </Form>
+                )}
+              </Mutation>
             );
           }}
         </Mutation>

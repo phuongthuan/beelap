@@ -7,6 +7,8 @@ import ItemStyles from './styles/ItemStyles';
 import Title from './styles/Title';
 import PriceTag from './styles/PriceTag';
 import AddToCart from './AddToCart';
+import User from './User';
+import hasPermission from '../lib/hasPermission';
 
 const Item = ({ item }) => (
   <ItemStyles>
@@ -26,18 +28,33 @@ const Item = ({ item }) => (
 
     <p>{item.description}</p>
 
-    <div className="buttonList">
-      <Link
-        href={{
-          pathname: 'update',
-          query: { id: item.id },
-        }}
-      >
-        <a>Edit</a>
-      </Link>
-      <AddToCart id={item.id} />
-      <DeleteItem id={item.id}>Delete</DeleteItem>
-    </div>
+    <User>
+      {({ data }) => {
+        const me = data ? data.me : null;
+        return (
+          <>
+            {me && (
+              <div className="buttonList">
+                {hasPermission(me, ['ADMIN', 'PERMISSIONUPDATE']).length !==
+                  0 && (
+                  <Link
+                    href={{
+                      pathname: 'update',
+                      query: { id: item.id },
+                    }}
+                  >
+                    <a>✏️Edit</a>
+                  </Link>
+                )}
+                <AddToCart id={item.id} />
+                {hasPermission(me, ['ADMIN', 'PERMISSIONDELETE']).length !==
+                  0 && <DeleteItem id={item.id}>❌Delete</DeleteItem>}
+              </div>
+            )}
+          </>
+        );
+      }}
+    </User>
   </ItemStyles>
 );
 

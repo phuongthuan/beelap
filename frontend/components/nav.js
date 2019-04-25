@@ -6,6 +6,7 @@ import NavStyles from './styles/NavStyles';
 import Signout from './Signout';
 import { TOGGLE_CART_MUTATION } from './Cart';
 import CartCount from './CartCount';
+import hasPermission from '../lib/hasPermission';
 
 const Nav = () => (
   <User>
@@ -13,17 +14,18 @@ const Nav = () => (
       const me = data ? data.me : null;
       return (
         <NavStyles>
-          <Link href="/">
-            <a>Shop</a>
-          </Link>
           <Link href="/items">
             <a>Product</a>
           </Link>
           {me && (
             <>
-              <Link href="/sell">
-                <a>Sell</a>
-              </Link>
+              {hasPermission(me, ['ADMIN', 'PERMISSIONCREATE']).length !==
+                0 && (
+                <Link href="/sell">
+                  <a>Sell</a>
+                </Link>
+              )}
+
               <Link href="/orders">
                 <a>My Orders</a>
               </Link>
@@ -32,17 +34,19 @@ const Nav = () => (
               </Link>
               <Signout />
               <Mutation mutation={TOGGLE_CART_MUTATION}>
-                {toggleCart => (
-                  <button onClick={toggleCart}>
-                    My Cart
-                    <CartCount
-                      count={me.cart.reduce(
-                        (tally, cartItem) => tally + cartItem.quantity,
-                        0
-                      )}
-                    />
-                  </button>
-                )}
+                {toggleCart => {
+                  const cartCount = me.cart.reduce(
+                    (tally, cartItem) => tally + cartItem.quantity,
+                    0
+                  );
+
+                  return (
+                    <button onClick={toggleCart}>
+                      My Cart
+                      {cartCount === 0 ? null : <CartCount count={cartCount} />}
+                    </button>
+                  );
+                }}
               </Mutation>
             </>
           )}

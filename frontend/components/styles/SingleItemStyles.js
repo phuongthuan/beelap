@@ -17,6 +17,10 @@ const SingleItemStyles = styled.div`
     margin: 3rem;
     font-size: 2rem;
   }
+  button {
+    display: block;
+  }
+
   h3 {
     background: ${props => props.theme.yellow};
     color: ${props => props.theme.red};

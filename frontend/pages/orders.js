@@ -1,3 +1,9 @@
-const Orders = () => <div>My Orders</div>;
+import Orders from '../components/Orders';
 
-export default Orders;
+const OrdersPage = () => (
+  <div className="container">
+    <Orders />
+  </div>
+);
+
+export default OrdersPage;

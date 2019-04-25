@@ -62,13 +62,16 @@ const Order = ({ id }) => (
           <div className="items">
             {order.items.map(item => (
               <div className="order-item" key={item.id}>
-                <img src={item.image} alt={item.title} />
+                <img
+                  style={{ width: '35%' }}
+                  src={item.image}
+                  alt={item.title}
+                />
                 <div className="item-details">
                   <h2>{item.title}</h2>
-                  <p>Qty: {item.quantity}</p>
-                  <p>Each: ${item.price}</p>
+                  <p>Quantity: {item.quantity}</p>
+                  <p>Price: ${item.price}</p>
                   <p>SubTotal: ${item.price * item.quantity}</p>
-                  <p>{item.description}</p>
                 </div>
               </div>
             ))}

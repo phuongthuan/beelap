@@ -59,50 +59,60 @@ export default class Signin extends Component {
         variables={this.state}
         refetchQueries={[{ query: CURRENT_USER_QUERY }]}
       >
-        {(signin, { loading, error }) => (
-          <Form
-            className="mt-5"
-            method="POST"
-            onSubmit={e => this.handleSubmit(e, signin)}
-          >
-            <h2 className="text-center pb-3">Sign In</h2>
-            {errors.length > 0 && (
-              <Alert color="danger">
-                {errors.map(err => (
-                  <p size="small" key={err}>
-                    {err}
-                  </p>
-                ))}
-              </Alert>
-            )}
-            {error && <ErrorMessage message={error.message} />}
-            <label htmlFor="Email">
-              Email
-              <input
-                id="email"
-                value={email}
-                type="email"
-                name="email"
-                placeholder="Email"
-                onChange={this.handleChange}
-              />
-            </label>
-            <label htmlFor="Password">
-              Password
-              <input
-                id="password"
-                value={password}
-                type="password"
-                name="password"
-                placeholder="Password"
-                onChange={this.handleChange}
-              />
-            </label>
-            <BeeButton type="submit">
-              {loading ? 'Sending...' : 'Sign In'}
-            </BeeButton>
-          </Form>
-        )}
+        {(signin, { loading, error }) => {
+          console.log(error && error.message);
+
+          const displayMessage = () => {
+            if (error && error.message === 'GraphQL error: Invalid Password!') {
+              return 'Invalid password, we can help you reset your password!';
+            }
+          };
+
+          return (
+            <Form
+              className="mt-5"
+              method="POST"
+              onSubmit={e => this.handleSubmit(e, signin)}
+            >
+              <h2 className="text-center pb-3">Sign In</h2>
+              {errors.length > 0 && (
+                <Alert color="danger">
+                  {errors.map(err => (
+                    <p size="small" key={err}>
+                      {err}
+                    </p>
+                  ))}
+                </Alert>
+              )}
+              {error && <ErrorMessage message={displayMessage()} />}
+              <label htmlFor="Email">
+                Email
+                <input
+                  id="email"
+                  value={email}
+                  type="email"
+                  name="email"
+                  placeholder="Email"
+                  onChange={this.handleChange}
+                />
+              </label>
+              <label htmlFor="Password">
+                Password
+                <input
+                  id="password"
+                  value={password}
+                  type="password"
+                  name="password"
+                  placeholder="Password"
+                  onChange={this.handleChange}
+                />
+              </label>
+              <BeeButton type="submit">
+                {loading ? 'Sending...' : 'Sign In'}
+              </BeeButton>
+            </Form>
+          );
+        }}
       </Mutation>
     );
   }

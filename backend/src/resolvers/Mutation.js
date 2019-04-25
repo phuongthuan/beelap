@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const stripe = require('../stripe');
 
 const logger = require('../../logger');
+const { hasPermission } = require('../utils');
 
 const Mutation = {
   async createItem(parent, args, context) {
@@ -14,13 +15,13 @@ const Mutation = {
       throw new Error(`You must logged in`);
     }
 
-    const item = await context.prisma.createItem({ 
+    const item = await context.prisma.createItem({
       user: {
         connect: { id: userId },
       },
       category: args.category,
       ...args,
-     }).$fragment(`
+    }).$fragment(`
         fragment ItemWithCategories on Item {
           id
           title
@@ -35,7 +36,7 @@ const Mutation = {
         }
     `);
 
-     logger.debug('create item', JSON.stringify(item, null, 0))
+    logger.debug('create item', JSON.stringify(item, null, 0))
 
     return item;
   },
@@ -152,6 +153,55 @@ const Mutation = {
     return { message: 'Goodbye!' };
   },
 
+  async updatePermissions(parent, args, context) {
+    // Make sure they're signed in.
+    const { userId } = context.request;
+    logger.debug('userId', userId);
+
+    if (!userId) {
+      throw new Error('You must be signed in!');
+    }
+
+    // 2. Query the current user
+    const currentUser = await context.prisma.user({ id: userId });
+
+    // 3. Check if they have permissions to do this
+    hasPermission(currentUser, ['ADMIN', 'PERMISSIONUPDATE']);
+
+    // 4. Update the permissions
+    return context.prisma.updateUser(
+      {
+        data: {
+          permissions: {
+            set: args.permissions,
+          },
+        },
+        where: {
+          id: args.userId,
+        },
+      }
+    );
+  },
+
+  async updateUser(parent, args, context) {
+    logger.debug('updateUser request', JSON.stringify(args, null, 2));
+
+    const { userId } = context.request;
+
+    if (!userId) {
+      throw new Error('You must be signed in soooon');
+    }
+
+    return context.prisma.updateUser({
+      where: {
+        id: userId,
+      },
+      data: {
+        name: args.name
+      }
+    });
+  },
+
   async addToCart(parent, args, context) {
 
     logger.debug('args', JSON.stringify(args, null, 2));
@@ -210,7 +260,7 @@ const Mutation = {
     `);
 
     logger.debug('cartItem found', cartItem);
-    
+
     // 1.5 Make sure we found an item
     if (!cartItem) throw new Error('No CartItem Found!');
     // 2. Make sure they own that cart item
@@ -225,7 +275,7 @@ const Mutation = {
     const { userId } = context.request;
     if (!userId) throw new Error('You must be signed in to complete this order.');
     const user = await context.prisma.user({ id: userId })
-    .$fragment(`
+      .$fragment(`
       fragment UserInfoCheckout on User {
         id
         name

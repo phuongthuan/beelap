@@ -41,9 +41,9 @@ const NavStyles = styled.ul`
       bottom: 0;
     }
     &:after {
+      content: '';
       height: 2px;
       background: ${props => props.theme.onyx};
-      content: '';
       width: 0;
       position: absolute;
       transform: translateX(-50%);
