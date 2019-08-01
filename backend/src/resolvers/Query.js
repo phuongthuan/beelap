@@ -4,7 +4,7 @@ const { hasPermission } = require('../utils');
 const Query = {
   items: async (parent, args, context) => {
 
-    const { searchTerm, category, orderBy = "createdAt_DESC" } = args;
+    const { searchTerm, category, orderBy = "createdAt_DESC", first, skip } = args;
 
     const allItems = await context.prisma.items({ 
       orderBy,
@@ -14,7 +14,9 @@ const Query = {
           { description_contains: searchTerm }
         ],
         category: { id: category }
-      }
+      },
+      first,
+      skip
     }).$fragment(`
         fragment ItemWithCategories on Item {
           id
@@ -32,6 +34,18 @@ const Query = {
 
     return allItems;
   },
+  itemsConnection: async (parent, args, context) => {
+    const count = await context.prisma.itemsConnection().$fragment(`
+      fragment CountItem on ItemConnection {
+        aggregate {
+          count
+        }
+      }
+    `);
+
+    return count;
+  },
+
   item: async (parent, { id }, context) => {
     const item = await context.prisma.item({ id }).$fragment(`
       fragment ItemWithCategories on Item {
@@ -50,9 +64,11 @@ const Query = {
 
     return item;
   },
+
   categories: async (parent, args, context) => {
     return context.prisma.categories();
   },
+
   orders: async (parent, args, context) => {
 
     const { userId } = context.request;

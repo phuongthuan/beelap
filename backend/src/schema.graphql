@@ -6,7 +6,8 @@ type SuccessMessage {
 
 type Query {
   item(id: ID!): Item!
-  items(searchTerm: String, category: String, orderBy: String): [Item]!
+  items(searchTerm: String, category: String, orderBy: String, first: Int, skip: Int): [Item]!
+  itemsConnection: ItemConnection!
   users: [User]!
   categories: [Category!]!
   me: User
@@ -22,6 +23,8 @@ type Mutation {
   signin(email: String!, password: String!): User!
   updatePermissions(permissions: [Permission], userId: ID!): User
   signout: SuccessMessage
+  requestReset(email: String!): SuccessMessage
+  resetPassword(resetToken: String!, password: String!, confirmPassword: String!): User!
   addToCart(id: ID!): CartItem
   removeFromCart(id: ID!): CartItem
   createOrder(token: String!): Order!
@@ -101,6 +104,17 @@ input CategoryWhereUniqueInput {
   id: ID!
   name: String
 }
+
+type ItemConnection {
+  aggregate: AggregateItem!
+}
+
+type AggregateItem {
+  count: Int!
+}
+
+
+
 
 
 
