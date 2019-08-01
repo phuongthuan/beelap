@@ -1,8 +1,11 @@
 import Profile from '../components/Profile';
+import PleaseSignIn from '../components/PleaseSignIn';
 
 const Me = () => (
   <div className="container">
-    <Profile />
+    <PleaseSignIn>
+      <Profile />
+    </PleaseSignIn>
   </div>
 );
 

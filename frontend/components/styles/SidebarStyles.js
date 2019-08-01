@@ -7,11 +7,12 @@ const SidebarStyles = styled.ul`
 
   li {
     background-color: ${props => props.theme.lightgray};
-    border-bottom: 2px solid ${props => props.theme.orange};
+    border-bottom: 1px solid ${props => props.theme.dark};
     transform: skew(-10deg);
     list-style: none;
     font-weight: 900;
     cursor: pointer;
+    padding: 5px;
   }
   a,
   button {

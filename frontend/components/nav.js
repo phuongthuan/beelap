@@ -14,40 +14,49 @@ const Nav = () => (
       const me = data ? data.me : null;
       return (
         <NavStyles>
-          <Link href="/items">
-            <a>Product</a>
-          </Link>
           {me && (
             <>
               {hasPermission(me, ['ADMIN', 'PERMISSIONCREATE']).length !==
                 0 && (
-                <Link href="/sell">
-                  <a>Sell</a>
-                </Link>
+                <>
+                  <Link href="/admin/items">
+                    <a>Admin</a>
+                  </Link>
+                  <Link href="/sell">
+                    <a>Sell</a>
+                  </Link>
+                </>
               )}
 
-              <Link href="/orders">
-                <a>My Orders</a>
-              </Link>
               <Link href="/me">
                 <a>Account</a>
               </Link>
-              <Signout />
-              <Mutation mutation={TOGGLE_CART_MUTATION}>
-                {toggleCart => {
-                  const cartCount = me.cart.reduce(
-                    (tally, cartItem) => tally + cartItem.quantity,
-                    0
-                  );
 
-                  return (
-                    <button onClick={toggleCart}>
-                      My Cart
-                      {cartCount === 0 ? null : <CartCount count={cartCount} />}
-                    </button>
-                  );
-                }}
-              </Mutation>
+              {hasPermission(me, ['USER']).length !== 0 && (
+                <>
+                  <Link href="/orders">
+                    <a>My Orders</a>
+                  </Link>
+                  <Mutation mutation={TOGGLE_CART_MUTATION}>
+                    {toggleCart => {
+                      const cartCount = me.cart.reduce(
+                        (tally, cartItem) => tally + cartItem.quantity,
+                        0
+                      );
+
+                      return (
+                        <button onClick={toggleCart}>
+                          My Cart
+                          {cartCount === 0 ? null : (
+                            <CartCount count={cartCount} />
+                          )}
+                        </button>
+                      );
+                    }}
+                  </Mutation>
+                </>
+              )}
+              <Signout />
             </>
           )}
           {!me && (

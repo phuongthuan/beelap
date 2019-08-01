@@ -7,12 +7,7 @@ const PleaseSignIn = props => (
     {({ data, loading }) => {
       if (loading) return <p>Loading...</p>;
       if (!data.me) {
-        return (
-          <div>
-            <p>Please Sign In before Continuing</p>
-            <Signin />
-          </div>
-        );
+        return <Signin />;
       }
       // eslint-disable-next-line react/prop-types
       return props.children;

@@ -26,8 +26,14 @@ const LOCAL_STATE_QUERY = gql`
   }
 `;
 
-const ALERT_MESSAGE_MUTATION = gql`
-  mutation {
+const WRITE_ALERT_MESSAGE = gql`
+  mutation WRITE_ALERT_MESSAGE($message: String!) {
+    writeAlertMessage(message: $message) @client
+  }
+`;
+
+const HIDE_ALERT_MESSAGE = gql`
+  mutation HIDE_ALERT_MESSAGE {
     hideAlertMessage @client
   }
 `;
@@ -39,7 +45,7 @@ class AlertMessage extends React.Component {
         {({ data }) => (
           <AlertStyles open={data.alertOpen}>
             {data.alertMessage}
-            <Mutation mutation={ALERT_MESSAGE_MUTATION}>
+            <Mutation mutation={HIDE_ALERT_MESSAGE}>
               {hideAlertMessage => (
                 <button onClick={hideAlertMessage}>x</button>
               )}
@@ -52,3 +58,4 @@ class AlertMessage extends React.Component {
 }
 
 export default AlertMessage;
+export { HIDE_ALERT_MESSAGE, WRITE_ALERT_MESSAGE };

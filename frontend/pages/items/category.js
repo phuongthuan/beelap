@@ -31,21 +31,21 @@ const Category = ({ query }) => (
     <Head>
       <title>Beelap - Category {query.id}</title>
     </Head>
-    <Query query={ALL_ITEMS_BY_CATEGORY} variables={{ category: query.id }}>
-      {({ data, loading, error }) => {
-        if (loading) return <p>Loading...</p>;
+    <div className="container-fluid">
+      <div className="row">
+        <div className="col-md-2">
+          <SideBar />
+        </div>
+        <Query query={ALL_ITEMS_BY_CATEGORY} variables={{ category: query.id }}>
+          {({ data, loading, error }) => {
+            if (loading) return <p>Loading...</p>;
 
-        if (error) return <ErrorMessage message={error.message} />;
+            if (error) return <ErrorMessage message={error.message} />;
 
-        if (data.items.length === 0)
-          return <ItemNotFound>No Item found!</ItemNotFound>;
+            if (data.items.length === 0)
+              return <ItemNotFound>No Item found!</ItemNotFound>;
 
-        return (
-          <div className="container-fluid">
-            <div className="row">
-              <div className="col-md-2">
-                <SideBar />
-              </div>
+            return (
               <div className="col-md-10">
                 <div className="row">
                   {data.items.map(item => (
@@ -58,11 +58,11 @@ const Category = ({ query }) => (
                   ))}
                 </div>
               </div>
-            </div>
-          </div>
-        );
-      }}
-    </Query>
+            );
+          }}
+        </Query>
+      </div>
+    </div>
   </>
 );
 

@@ -9,6 +9,7 @@ import ErrorMessage from './ErrorMessage';
 import Category from './Category';
 import BeeButton from './styles/BeeButton';
 import Form from './styles/Form';
+import Loading from './Loading';
 
 const SINGLE_ITEM_QUERY = gql`
   query SINGLE_ITEM_QUERY($id: ID!) {
@@ -79,16 +80,58 @@ class UpdateItem extends Component {
     e.preventDefault();
     const { category } = this.state;
     delete this.state.errors;
-    await updateItemMutation({
+    const categoryUpdate = category ? { connect: { id: category } } : null;
+
+    const updatedItem = await updateItemMutation({
       variables: {
         ...this.state,
         id: this.props.id,
-        category: {
-          connect: { id: category },
-        },
+        category: categoryUpdate,
       },
     });
-    Router.push('/');
+
+    if (updatedItem) {
+      Router.push('/');
+    }
+  };
+
+  uploadFile = async e => {
+    const { files } = e.target;
+    const data = new FormData();
+    data.append('file', files[0]);
+    data.append('upload_preset', 'beelap');
+    this.setState({ isLoadingImage: true });
+
+    const res = await fetch(
+      'https://api.cloudinary.com/v1_1/thuannp/image/upload',
+      {
+        method: 'POST',
+        body: data,
+      }
+    );
+
+    if (res) {
+      const result = await res.json();
+      this.setState({
+        image: result.secure_url,
+        largeImage: result.eager[0].secure_url,
+        isLoadingImage: false,
+      });
+    }
+  };
+
+  showImage = () => {
+    const { image, isLoadingImage } = this.state;
+    if (isLoadingImage) return <Loading />;
+
+    if (image) {
+      return (
+        <div>
+          <img width="50%" src={image} alt="item" />
+        </div>
+      );
+    }
+    return null;
   };
 
   render() {
@@ -97,7 +140,7 @@ class UpdateItem extends Component {
     return (
       <Query query={SINGLE_ITEM_QUERY} variables={{ id }}>
         {({ data, loading, error }) => {
-          if (loading) return <div>Loading...</div>;
+          if (loading) return <Loading />;
 
           if (error) return <div>{error.message}</div>;
 
@@ -167,6 +210,17 @@ class UpdateItem extends Component {
                       onChange={this.handleChange}
                     />
                   </label>
+
+                  <label htmlFor="File">
+                    Image
+                    <input
+                      id="file"
+                      type="file"
+                      name="file"
+                      onChange={this.uploadFile}
+                    />
+                  </label>
+                  <img width="50%" src={item.image} alt="item" />
 
                   <label htmlFor="Price">
                     Price

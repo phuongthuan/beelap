@@ -65,7 +65,7 @@ export default class Signup extends Component {
             method="POST"
             onSubmit={e => this.handleSubmit(e, signup)}
           >
-            <h2 className="text-center pb-3">Sign Up</h2>
+            <h2 className="text-center pb-5">Sign Up</h2>
             {errors.length > 0 && (
               <Alert color="danger">
                 {errors.map(err => (

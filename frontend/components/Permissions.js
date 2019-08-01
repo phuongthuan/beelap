@@ -46,7 +46,7 @@ const Permissions = () => (
 
       return (
         <div>
-          <h2>Manage Permission</h2>
+          <h2 className="mb-3">Manage Permission</h2>
           <Table>
             <thead>
               <tr>

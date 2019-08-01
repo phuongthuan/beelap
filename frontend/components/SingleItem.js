@@ -7,6 +7,8 @@ import SingleItemStyles from './styles/SingleItemStyles';
 import { SINGLE_ITEM_QUERY } from './UpdateItem';
 import ErrorMessage from './ErrorMessage';
 import ItemNotFound from './styles/ItemNoFound';
+import AddToCart from './AddToCart';
+import User from './User';
 
 const SingleItem = props => (
   <Query query={SINGLE_ITEM_QUERY} variables={{ id: props.id }}>
@@ -26,9 +28,22 @@ const SingleItem = props => (
           </Head>
           {item.image && <img src={item.image} alt={item.title} />}
           <div className="details">
-            <h2>{item.title}</h2>
+            <h1 className="mb-4">{item.title}</h1>
             <p>{item.description}</p>
             <h3>${item.price}</h3>
+
+            <User>
+              {/* eslint-disable-next-line no-shadow */}
+              {({ data }) => {
+                const me = data ? data.me : null;
+                console.log(data);
+                // if (me) {
+                //   return <AddToCart id={props.id} />;
+                // }
+
+                return null;
+              }}
+            </User>
           </div>
         </SingleItemStyles>
       );

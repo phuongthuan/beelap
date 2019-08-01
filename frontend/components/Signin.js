@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Router from 'next/router';
+import Link from 'next/link';
 import { Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
 import { Alert } from 'reactstrap';
@@ -74,7 +75,7 @@ export default class Signin extends Component {
               method="POST"
               onSubmit={e => this.handleSubmit(e, signin)}
             >
-              <h2 className="text-center pb-3">Sign In</h2>
+              <h2 className="text-center pb-5">Sign In</h2>
               {errors.length > 0 && (
                 <Alert color="danger">
                   {errors.map(err => (
@@ -86,7 +87,6 @@ export default class Signin extends Component {
               )}
               {error && <ErrorMessage message={displayMessage()} />}
               <label htmlFor="Email">
-                Email
                 <input
                   id="email"
                   value={email}
@@ -97,7 +97,6 @@ export default class Signin extends Component {
                 />
               </label>
               <label htmlFor="Password">
-                Password
                 <input
                   id="password"
                   value={password}
@@ -107,6 +106,25 @@ export default class Signin extends Component {
                   onChange={this.handleChange}
                 />
               </label>
+
+              {/* Forgot Password */}
+              <Link
+                href={{
+                  pathname: '/request-reset',
+                }}
+              >
+                <a>Forgot your password?</a>
+              </Link>
+
+              {/* Sign Up */}
+              <Link
+                href={{
+                  pathname: '/signup',
+                }}
+              >
+                <a>Don't have account? Sign up</a>
+              </Link>
+
               <BeeButton type="submit">
                 {loading ? 'Sending...' : 'Sign In'}
               </BeeButton>

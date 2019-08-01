@@ -1,8 +1,11 @@
 import Orders from '../components/Orders';
+import PleaseSignIn from '../components/PleaseSignIn';
 
 const OrdersPage = () => (
   <div className="container">
-    <Orders />
+    <PleaseSignIn>
+      <Orders />
+    </PleaseSignIn>
   </div>
 );
 

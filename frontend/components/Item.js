@@ -26,7 +26,11 @@ const Item = ({ item }) => (
 
     <PriceTag>${item.price}</PriceTag>
 
-    <p>{item.description}</p>
+    <p>
+      {item.description.length > 20
+        ? `${item.description.substr(0, 20)}...`
+        : item.description}
+    </p>
 
     <User>
       {({ data }) => {
@@ -39,14 +43,18 @@ const Item = ({ item }) => (
                   0 && (
                   <Link
                     href={{
-                      pathname: 'update',
+                      pathname: '/update',
                       query: { id: item.id },
                     }}
                   >
                     <a>✏️Edit</a>
                   </Link>
                 )}
-                <AddToCart id={item.id} />
+
+                {hasPermission(me, ['USER']).length !== 0 && (
+                  <AddToCart id={item.id} />
+                )}
+
                 {hasPermission(me, ['ADMIN', 'PERMISSIONDELETE']).length !==
                   0 && <DeleteItem id={item.id}>❌Delete</DeleteItem>}
               </div>

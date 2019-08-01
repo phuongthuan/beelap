@@ -40,6 +40,12 @@ const Form = styled.form`
     font-weight: 600;
     padding: 0.5rem 1.2rem;
   }
+  a {
+    display: block;
+    font-size: 1rem;
+    padding-bottom: 5px;
+    color: ${props => props.theme.onyx};
+  }
 `;
 
 export default Form;
